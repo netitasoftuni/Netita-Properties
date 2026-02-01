@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Browse all property listings on Netita Properties. Filter by location, price, bedrooms, and more.">
+    <meta name="theme-color" content="#2563eb">
+    <title>Property Listings - Netita Properties</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header id="header" class="header">
+        <div class="container">
+            <div class="header__wrapper">
+                <div class="logo">
+                    <h1 class="logo__text">Netita Properties</h1>
+                    <p class="logo__tagline">Find Your Perfect Home</p>
+                </div>
+                
+                <nav class="nav">
+                    <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+                        <span class="nav__toggle-icon"></span>
+                        <span class="nav__toggle-icon"></span>
+                        <span class="nav__toggle-icon"></span>
+                    </button>
+                    <ul class="nav__menu" id="navMenu">
+                        <li><a href="index.html" class="nav__link">Home</a></li>
+                        <li><a href="listings.html" class="nav__link nav__link--active">Listings</a></li>
+                        <li><a href="contact.html" class="nav__link">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="app">
+        <!-- Page Header Section -->
+        <section class="page-header">
+            <div class="container">
+                <h1 class="page-header__title">Property Listings</h1>
+                <p class="page-header__subtitle">Explore our complete collection of available properties</p>
+            </div>
+        </section>
+
+        <!-- Listings Container -->
+        <div class="listings-wrapper">
+            <div class="container listings-container">
+                <!-- Sidebar Filters -->
+                <aside id="filters" class="filters-sidebar" role="region" aria-label="Listing filters" aria-hidden="false">
+                    <div class="filters-header">
+                        <h3 class="filters-header__title">Filters</h3>
+                        <button class="filters-header__reset" id="resetFilters">Reset All</button>
+                    </div>
+
+                    <!-- Search Filter -->
+                    <div class="filter-group">
+                        <label class="filter-label">Search Location</label>
+                        <input 
+                            type="text" 
+                            id="locationFilter" 
+                            class="filter-input" 
+                            placeholder="Enter location..."
+                            aria-label="Search by location"
+                        >
+                    </div>
+
+                    <!-- Property Type Filter -->
+                    <div class="filter-group">
+                        <label class="filter-label">Property Type</label>
+                        <div class="filter-options">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="property-type-filter" value="Single Family" aria-label="Single Family homes">
+                                <span>Single Family</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="property-type-filter" value="Condo" aria-label="Condos">
+                                <span>Condo</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="property-type-filter" value="Apartment" aria-label="Apartments">
+                                <span>Apartment</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="property-type-filter" value="Loft" aria-label="Lofts">
+                                <span>Loft</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="property-type-filter" value="Villa" aria-label="Villas">
+                                <span>Villa</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="property-type-filter" value="Penthouse" aria-label="Penthouses">
+                                <span>Penthouse</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Price Range Filter -->
+                    <div class="filter-group">
+                        <label class="filter-label">Price Range</label>
+                        <div class="price-range">
+                            <div class="price-range__inputs">
+                                <input 
+                                    type="number" 
+                                    id="minPrice" 
+                                    class="price-input" 
+                                    placeholder="Min" 
+                                    aria-label="Minimum price"
+                                >
+                                <span class="price-range__separator">-</span>
+                                <input 
+                                    type="number" 
+                                    id="maxPrice" 
+                                    class="price-input" 
+                                    placeholder="Max" 
+                                    aria-label="Maximum price"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bedrooms Filter -->
+                    <div class="filter-group">
+                        <label class="filter-label">Bedrooms</label>
+                        <div class="filter-options">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="bedrooms-filter" value="2" aria-label="2 or more bedrooms">
+                                <span>2+</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="bedrooms-filter" value="3" aria-label="3 or more bedrooms">
+                                <span>3+</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="bedrooms-filter" value="4" aria-label="4 or more bedrooms">
+                                <span>4+</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="bedrooms-filter" value="5" aria-label="5 or more bedrooms">
+                                <span>5+</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Bathrooms Filter -->
+                    <div class="filter-group">
+                        <label class="filter-label">Bathrooms</label>
+                        <div class="filter-options">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="bathrooms-filter" value="1" aria-label="1 or more bathrooms">
+                                <span>1+</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="bathrooms-filter" value="2" aria-label="2 or more bathrooms">
+                                <span>2+</span>
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" class="bathrooms-filter" value="3" aria-label="3 or more bathrooms">
+                                <span>3+</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Sorting -->
+                    <div class="filter-group">
+                        <label class="filter-label">Sort By</label>
+                        <select id="sortBy" class="filter-select" aria-label="Sort properties by">
+                            <option value="newest">Newest First</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="beds">Bedrooms: High to Low</option>
+                            <option value="sqft">Size: Large to Small</option>
+                        </select>
+                    </div>
+                </aside>
+
+                <!-- Main Content Area -->
+                <section class="listings-main" role="main" aria-label="Listings results">
+                    <!-- Results Header -->
+                    <div class="results-header">
+                                            <div class="results-header__info">
+                                                <span class="results-header__count">Showing <strong id="propertiesCount" aria-live="polite" aria-atomic="true">0</strong> properties</span>
+                                            </div>
+                                        <div class="results-header__controls">
+                                            <button class="button button--secondary" id="filterToggle" aria-expanded="false" aria-controls="filters" aria-label="Toggle filters">Filters</button>
+                                        </div>
+                    </div>
+
+                    <!-- Properties Grid -->
+                    <div class="properties-grid" id="propertiesGrid">
+                        <!-- Property cards will be inserted here by JavaScript -->
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                        <div class="skeleton-card"></div>
+                    </div>
+
+                    <!-- No Results Message -->
+                    <div class="no-results" id="noResults" style="display: none;">
+                        <div class="no-results__content">
+                            <h3 class="no-results__title">No Properties Found</h3>
+                            <p class="no-results__text">Try adjusting your filters or search terms to find available properties.</p>
+                            <button class="button button--primary" id="clearFiltersBtn">Clear All Filters</button>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination" id="pagination">
+                        <!-- Pagination buttons will be inserted here -->
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__grid">
+                <div class="footer__column">
+                    <h4 class="footer__heading">About Netita Properties</h4>
+                    <p class="footer__text">Your trusted partner in finding the perfect property. With thousands of listings and expert agents, we make real estate simple.</p>
+                </div>
+                
+                <div class="footer__column">
+                    <h4 class="footer__heading">Quick Links</h4>
+                    <ul class="footer__links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="listings.html">Listings</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer__column">
+                    <h4 class="footer__heading">Contact Info</h4>
+                    <p class="footer__text">
+                        📞 +(359) 888 65 99 00<br>
+                        📧 netita@students.softuni.bg<br>
+                        📍 Sofia Center, San Stefano St 391504 Sofia
+                    </p>
+                </div>
+            </div>
+            
+            <div class="footer__bottom">
+                <p>&copy; 2026 Netita Properties. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="data/properties.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/listings.js"></script>
+</body>
+</html>

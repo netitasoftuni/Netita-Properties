@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Netita Properties - Find your dream property with ease. Browse listings, search, and filter properties by location, price, and more.">
+    <meta name="theme-color" content="#2563eb">
+    <title>Netita Properties - Real Estate Listings</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header id="header" class="header">
+        <div class="container">
+            <div class="header__wrapper">
+                <div class="logo">
+                    <h1 class="logo__text">Netita Properties</h1>
+                    <p class="logo__tagline">Find Your Perfect Home</p>
+                </div>
+                
+                <nav class="nav">
+                    <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+                        <span class="nav__toggle-icon"></span>
+                        <span class="nav__toggle-icon"></span>
+                        <span class="nav__toggle-icon"></span>
+                    </button>
+                    <ul class="nav__menu" id="navMenu">
+                        <li><a href="index.html" class="nav__link nav__link--active">Home</a></li>
+                        <li><a href="listings.html" class="nav__link">Listings</a></li>
+                        <li><a href="contact.html" class="nav__link">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="app">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero__content">
+                <h2 class="hero__title">Discover Your Dream Property</h2>
+                <p class="hero__subtitle">Search from hundreds of listings in your area</p>
+                
+                <!-- Quick Search Bar -->
+                <div class="search-bar hero__search">
+                    <input 
+                        type="text" 
+                        id="heroSearch" 
+                        class="search-bar__input" 
+                        placeholder="Enter location or property type..."
+                        aria-label="Quick property search"
+                    >
+                    <button class="search-bar__button" id="heroSearchBtn">Search</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Properties Section -->
+        <section class="featured">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-header__title">Featured Properties</h2>
+                    <p class="section-header__subtitle">Check out our latest and most popular listings</p>
+                </div>
+                
+                <div class="properties-grid" id="featuredProperties">
+                    <!-- Property cards will be inserted here by JavaScript -->
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                    <div class="skeleton-card"></div>
+                </div>
+                
+                <div class="section-cta">
+                    <a href="listings.html" class="button button--primary button--large">View All Listings</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="how-it-works">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-header__title">How It Works</h2>
+                    <p class="section-header__subtitle">Three simple steps to find your perfect home</p>
+                </div>
+                
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-card__number">1</div>
+                        <h3 class="step-card__title">Search</h3>
+                        <p class="step-card__description">Browse our extensive database of properties in your desired location.</p>
+                    </div>
+                    
+                    <div class="step-card">
+                        <div class="step-card__number">2</div>
+                        <h3 class="step-card__title">Filter</h3>
+                        <p class="step-card__description">Narrow down your options using price, bedrooms, amenities, and more.</p>
+                    </div>
+                    
+                    <div class="step-card">
+                        <div class="step-card__number">3</div>
+                        <h3 class="step-card__title">Contact</h3>
+                        <p class="step-card__description">Reach out to agents and schedule viewings for properties you love.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Section -->
+        <section class="cta-banner">
+            <div class="container">
+                <div class="cta-banner__content">
+                    <h2 class="cta-banner__title">Ready to Find Your Home?</h2>
+                    <p class="cta-banner__text">Start browsing our listings today and find the perfect property for you and your family.</p>
+                    <a href="listings.html" class="button button--secondary button--large">Browse Listings Now</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__grid">
+                <div class="footer__column">
+                    <h4 class="footer__heading">About Netita Properties</h4>
+                    <p class="footer__text">Your trusted partner in finding the perfect property. With thousands of listings and expert agents, we make real estate simple.</p>
+                </div>
+                
+                <div class="footer__column">
+                    <h4 class="footer__heading">Quick Links</h4>
+                    <ul class="footer__links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="listings.html">Listings</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer__column">
+                    <h4 class="footer__heading">Contact Info</h4>
+                    <p class="footer__text">
+                        📞 +(359) 888 65 99 00<br>
+                        📧 netita@students.softuni.bg<br>
+                        📍 Sofia Center, San Stefano St 391504 Sofia
+                    </p>
+                </div>
+            </div>
+            
+            <div class="footer__bottom">
+                <p>&copy; 2026 Netita Properties. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="data/properties.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

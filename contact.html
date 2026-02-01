@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contact Netita Properties for inquiries about listings, property information, or to schedule viewings.">
+    <meta name="theme-color" content="#2563eb">
+    <title>Contact Us - Netita Properties</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header id="header" class="header">
+        <div class="container">
+            <div class="header__wrapper">
+                <div class="logo">
+                    <h1 class="logo__text">Netita Properties</h1>
+                    <p class="logo__tagline">Find Your Perfect Home</p>
+                </div>
+                
+                <nav class="nav">
+                    <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+                        <span class="nav__toggle-icon"></span>
+                        <span class="nav__toggle-icon"></span>
+                        <span class="nav__toggle-icon"></span>
+                    </button>
+                    <ul class="nav__menu" id="navMenu">
+                        <li><a href="index.html" class="nav__link">Home</a></li>
+                        <li><a href="listings.html" class="nav__link">Listings</a></li>
+                        <li><a href="contact.html" class="nav__link nav__link--active">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="app">
+        <!-- Page Header -->
+        <section class="page-header">
+            <div class="container">
+                <h1 class="page-header__title">Get In Touch</h1>
+                <p class="page-header__subtitle">We'd love to hear from you. Contact us with any questions or inquiries.</p>
+            </div>
+        </section>
+
+        <!-- Contact Content -->
+        <section class="contact-section">
+            <div class="container">
+                <div class="contact-wrapper">
+                    <!-- Contact Info Cards -->
+                    <div class="contact-info-grid">
+                        <div class="contact-info-card">
+                            <div class="contact-info-card__icon">📞</div>
+                            <h3 class="contact-info-card__title">Phone</h3>
+                            <p class="contact-info-card__text">
+                                <a href="tel:+35988865990">+(359) 888 65 99 00</a>
+                            </p>
+                        </div>
+                        
+                        <div class="contact-info-card">
+                            <div class="contact-info-card__icon">📧</div>
+                            <h3 class="contact-info-card__title">Email</h3>
+                            <p class="contact-info-card__text">
+                                <a href="mailto:netita@students.softuni.bg">netita@students.softuni.bg</a>
+                            </p>
+                        </div>
+                        
+                        <div class="contact-info-card">
+                            <div class="contact-info-card__icon">📍</div>
+                            <h3 class="contact-info-card__title">Address</h3>
+                            <p class="contact-info-card__text">
+                                Sofia Center, San Stefano St 391504<br>
+                                Sofia
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div class="contact-form-wrapper">
+                        <div class="contact-form-header">
+                            <h2 class="contact-form-header__title">Send us a Message</h2>
+                            <p class="contact-form-header__subtitle">Fill out the form below and we'll get back to you as soon as possible.</p>
+                        </div>
+
+                        <form id="contactForm" class="contact-form">
+                            <div class="form-row">
+                                <div class="form-group form-group--half">
+                                    <label class="form-label">Full Name *</label>
+                                    <input 
+                                        type="text" 
+                                        id="fullName" 
+                                        class="form-input" 
+                                        placeholder="Your full name" 
+                                        required 
+                                        aria-label="Full name"
+                                    >
+                                    <span class="form-error" id="fullNameError"></span>
+                                </div>
+                                
+                                <div class="form-group form-group--half">
+                                    <label class="form-label">Email Address *</label>
+                                    <input 
+                                        type="email" 
+                                        id="email" 
+                                        class="form-input" 
+                                        placeholder="your.email@example.com" 
+                                        required 
+                                        aria-label="Email address"
+                                    >
+                                    <span class="form-error" id="emailError"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group form-group--half">
+                                    <label class="form-label">Phone Number</label>
+                                    <input 
+                                        type="tel" 
+                                        id="phone" 
+                                        class="form-input" 
+                                        placeholder="+(359) 888 65 99 00" 
+                                        aria-label="Phone number"
+                                    >
+                                </div>
+                                
+                                <div class="form-group form-group--half">
+                                    <label class="form-label">Property Interest (Optional)</label>
+                                    <input 
+                                        type="text" 
+                                        id="propertyInterest" 
+                                        class="form-input" 
+                                        placeholder="Address or property ID" 
+                                        aria-label="Property interest"
+                                    >
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Subject *</label>
+                                <select id="subject" class="form-input" required aria-label="Inquiry subject">
+                                    <option value="">Select a subject...</option>
+                                    <option value="inquiry">General Inquiry</option>
+                                    <option value="viewing">Schedule Viewing</option>
+                                    <option value="offer">Make an Offer</option>
+                                    <option value="selling">Sell a Property</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Message *</label>
+                                <textarea 
+                                    id="message" 
+                                    class="form-textarea" 
+                                    rows="6" 
+                                    placeholder="Tell us more about your inquiry..." 
+                                    required 
+                                    aria-label="Message content"
+                                ></textarea>
+                                <span class="form-error" id="messageError"></span>
+                            </div>
+
+                            <div class="form-checkbox">
+                                <label>
+                                    <input 
+                                        type="checkbox" 
+                                        id="agreeTerms" 
+                                        aria-label="Agree to privacy policy"
+                                    >
+                                    <span>I agree to the privacy policy</span>
+                                </label>
+                            </div>
+
+                            <button type="submit" class="button button--primary button--large" style="width: 100%;">
+                                Send Message
+                            </button>
+
+                            <div class="form-success" id="formSuccess" style="display: none;">
+                                <p>✓ Thank you! Your message has been sent successfully. We'll get back to you soon.</p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="faq-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-header__title">Frequently Asked Questions</h2>
+                    <p class="section-header__subtitle">Find answers to common questions about our services</p>
+                </div>
+
+                <div class="faq-grid">
+                    <div class="faq-item">
+                        <h3 class="faq-item__question">What properties are currently available?</h3>
+                        <p class="faq-item__answer">Browse our complete listings page to see all available properties. You can filter by location, price, bedrooms, and more to find exactly what you're looking for.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3 class="faq-item__question">How do I schedule a property viewing?</h3>
+                        <p class="faq-item__answer">You can contact us directly through this form, call us, or use the "Contact Agent" button on any property listing page to schedule a convenient time.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3 class="faq-item__question">What areas do you serve?</h3>
+                        <p class="faq-item__answer">We serve the entire metropolitan area and surrounding regions. Our listings include properties in downtown, suburban, and rural locations.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3 class="faq-item__question">Can you help me sell my property?</h3>
+                        <p class="faq-item__answer">Absolutely! We offer comprehensive property selling services. Contact us to learn about our listing packages and how we can help you sell your property quickly and at the best price.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3 class="faq-item__question">Do you offer financing options?</h3>
+                        <p class="faq-item__answer">While we specialize in property listings, we can connect you with trusted mortgage lenders and financial advisors to help with your financing needs.</p>
+                    </div>
+
+                    <div class="faq-item">
+                        <h3 class="faq-item__question">How quickly do new listings appear?</h3>
+                        <p class="faq-item__answer">New listings are added to our website immediately. Sign up for our newsletter to get notified about new properties matching your criteria.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__grid">
+                <div class="footer__column">
+                    <h4 class="footer__heading">About Netita Properties</h4>
+                    <p class="footer__text">Your trusted partner in finding the perfect property. With thousands of listings and expert agents, we make real estate simple.</p>
+                </div>
+                
+                <div class="footer__column">
+                    <h4 class="footer__heading">Quick Links</h4>
+                    <ul class="footer__links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="listings.html">Listings</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer__column">
+                    <h4 class="footer__heading">Contact Info</h4>
+                    <p class="footer__text">
+                        📞 +(359) 888 65 99 00<br>
+                        📧 netita@students.softuni.bg<br>
+                        📍 Sofia Center, San Stefano St 391504 Sofia
+                    </p>
+                </div>
+            </div>
+            
+            <div class="footer__bottom">
+                <p>&copy; 2026 Netita Properties. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="data/properties.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/contact.js"></script>
+</body>
+</html>
