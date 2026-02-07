@@ -194,13 +194,39 @@ const HeroAnimationsHandler = {
 
 const HeroSearchHandler = {
     init() {
-        const searchInput = document.getElementById('heroSearch');
-        const searchBtn = document.getElementById('heroSearchBtn');
+        this.searchInput = document.getElementById('heroSearch');
+        this.searchBtn = document.getElementById('heroSearchBtn');
+        this.listingTypeSelect = document.getElementById('heroListingType');
+        this.locationSelect = document.getElementById('heroLocationSelect');
+        this.propertyTypeSelect = document.getElementById('heroPropertyTypeSelect');
         
-        if (!searchInput || !searchBtn) return;
-        
-        searchBtn.addEventListener('click', () => this.handleSearch());
-        searchInput.addEventListener('keypress', (e) => {
+        if (!this.searchInput || !this.searchBtn) return;
+
+        // Populate property types from properties data if available
+        if (typeof properties !== 'undefined' && this.propertyTypeSelect) {
+            const types = Array.from(new Set(properties.map(p => p.type).filter(Boolean)));
+            types.forEach(t => {
+                const opt = document.createElement('option');
+                opt.value = t;
+                opt.textContent = t;
+                this.propertyTypeSelect.appendChild(opt);
+            });
+        }
+
+        // If location select has only the default, try populating from properties
+        if (typeof properties !== 'undefined' && this.locationSelect && this.locationSelect.options.length <= 1) {
+            const locs = Array.from(new Set(properties.map(p => p.location).filter(Boolean)));
+            locs.sort();
+            locs.forEach(l => {
+                const opt = document.createElement('option');
+                opt.value = l;
+                opt.textContent = l;
+                this.locationSelect.appendChild(opt);
+            });
+        }
+
+        this.searchBtn.addEventListener('click', () => this.handleSearch());
+        this.searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 this.handleSearch();
             }
@@ -208,13 +234,20 @@ const HeroSearchHandler = {
     },
     
     handleSearch() {
-        const searchInput = document.getElementById('heroSearch');
-        const query = searchInput.value.trim();
-        
-        if (query) {
-            // Redirect to listings page with search query
-            window.location.href = `listings.html?search=${encodeURIComponent(query)}`;
-        }
+        const query = this.searchInput?.value.trim() || '';
+        const listingType = this.listingTypeSelect?.value || '';
+        const location = this.locationSelect?.value || '';
+        const propertyType = this.propertyTypeSelect?.value || '';
+
+        const params = new URLSearchParams();
+        if (query) params.set('search', query);
+        if (location) params.set('location', location);
+        if (propertyType) params.set('types', propertyType);
+        if (listingType) params.set('listingType', listingType);
+
+        const qs = params.toString();
+        const url = qs ? `listings.html?${qs}` : 'listings.html';
+        window.location.href = url;
     }
 };
 

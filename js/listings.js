@@ -177,6 +177,16 @@ const ListingsHandler = {
             this.locationInput.value = params.search;
         }
 
+        if (params.location && this.locationInput) {
+            // explicit location param takes precedence
+            this.locationInput.value = params.location;
+        }
+
+        // Preserve listing type param for filtering (if present)
+        if (params.listingType) {
+            this.listingType = params.listingType;
+        }
+
         if (params.minPrice && this.minPriceInput) this.minPriceInput.value = params.minPrice;
         if (params.maxPrice && this.maxPriceInput) this.maxPriceInput.value = params.maxPrice;
         if (params.sort && this.sortBySelect) this.sortBySelect.value = params.sort;
@@ -223,6 +233,14 @@ const ListingsHandler = {
         
         // Filter properties
         this.filteredProperties = properties.filter(property => {
+            // Listing type filter (only if property explicitly has listingType)
+            const listingType = this.listingType || '';
+            if (listingType) {
+                if (property.listingType && property.listingType !== listingType) {
+                    return false;
+                }
+            }
+
             // Location filter
             if (location && !property.location.toLowerCase().includes(location) && 
                 !property.address.toLowerCase().includes(location)) {
@@ -270,6 +288,9 @@ const ListingsHandler = {
         const params = new URLSearchParams();
         const location = this.locationInput?.value.trim();
         if (location) params.set('search', location);
+
+        // Persist listing type if present
+        if (this.listingType) params.set('listingType', this.listingType);
 
         const min = this.minPriceInput?.value;
         const max = this.maxPriceInput?.value;

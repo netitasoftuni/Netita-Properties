@@ -334,6 +334,17 @@ em {
     box-shadow: var(--shadow-lg);
 }
 
+.search-bar {
+    flex-wrap: nowrap; /* keep controls on one line */
+    align-items: center;
+    white-space: nowrap;
+}
+
+/* Ensure selects are not clipped and are visible above other elements */
+.search-bar {
+    overflow: visible;
+}
+
 .search-bar__input {
     flex: 1;
     padding: var(--spacing-base);
@@ -364,6 +375,72 @@ em {
 .search-bar__button:hover {
     background-color: var(--color-primary-dark);
 }
+
+/* Select controls for hero search */
+.search-bar__select {
+    padding: var(--spacing-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-base);
+    background: #ffffff !important;
+    color: var(--color-text) !important;
+    font-size: var(--font-size-base);
+    min-width: 120px;
+    max-width: 220px;
+    display: inline-block;
+    z-index: 50;
+    -webkit-appearance: menulist-button;
+    appearance: auto;
+    flex: 0 1 160px; /* fixed-ish width but allow shrinking */
+    opacity: 1 !important;
+}
+
+.search-bar__select option {
+    color: #1f2937 !important;
+    background: #ffffff !important;
+    font-size: var(--font-size-base);
+    background-color: white !important;
+    color: #1f2937 !important;
+}
+
+.search-bar__select option:checked {
+    background: #3b82f6 !important;
+    color: #ffffff !important;
+}
+
+/* Force visible dark text for select control and its value across browsers */
+.search-bar__select,
+.search-bar__select option,
+.search-bar__select::-ms-value,
+.search-bar__select:-moz-focusring,
+.search-bar__select optgroup {
+    color: #1f2937 !important;
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
+.search-bar__input {
+    flex: 1 1 320px; /* allow input to take remaining space */
+    min-width: 160px;
+}
+
+.search-bar__button {
+    flex: 0 0 auto;
+}
+
+@media (max-width: 700px) {
+    .search-bar {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-base);
+    }
+
+    .search-bar__input,
+    .search-bar__select,
+    .search-bar__button {
+        width: 100%;
+    }
+}
+
 
 /* =============================================
    Featured Properties Section
