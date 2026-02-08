@@ -91,7 +91,7 @@ NavigationHandler:
 
 ### Filter Panel (Sidebar)
 - **Location Search** - Text input, searches address and location
-- **Property Type** - Checkboxes (Single Family, Condo, Apartment, Loft, Villa, Penthouse)
+- **Property Type** - Checkboxes (Studio, Office, Apartment, Garage, House, Penthouse)
 - **Price Range** - Min and max price inputs
 - **Bedrooms** - Checkboxes (2+, 3+, 4+, 5+)
 - **Bathrooms** - Checkboxes (1+, 2+, 3+)

@@ -105,7 +105,7 @@ Netita Properties/
 - `sqft` - Square footage
 - `image` - Image URL (placeholder)
 - `yearBuilt` - Construction year
-- `type` - Property type (Single Family, Condo, Loft, etc.)
+- `type` - Property type (Studio, Apartment, House, etc.)
 - `description` - Property description
 - `amenities` - Array of amenities
 - `listingDate` - Listing date
