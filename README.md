@@ -5,6 +5,40 @@ Netita Properties is a responsive real estate website built with vanilla HTML5, 
 
 ---
 
+## AI Property Intelligence (imoti.net) — Local API
+
+This project now includes an optional local API endpoint to analyze a public `imoti.net` listing URL and return **insights only**.
+
+**Key constraints (enforced by design):**
+- Does **not** store raw HTML pages.
+- Does **not** republish listing descriptions or images.
+- Extracts only minimal structured numeric fields in-memory and returns computed insights JSON.
+
+### Run locally
+
+Prerequisites:
+- Node.js 18+ (required for built-in `fetch`)
+
+Commands:
+- Install: `npm install`
+- Run site + API: `npm run dev`
+
+Windows note:
+- If PowerShell blocks `npm` scripts, see [server/README_LOCAL_SETUP.md](server/README_LOCAL_SETUP.md).
+
+Open:
+- http://localhost:5173
+
+API:
+- `POST /api/imoti/analyze` with JSON body: `{ "url": "https://www.imoti.net/..." }`
+
+### Frontend flow
+
+- Paste an `https://imoti.net/...` URL into the home page hero search and press **Search**.
+- The app routes to `property-details.html?imotiUrl=...` and displays the returned insights.
+
+---
+
 ## Phase 1: Project Setup & Foundation ✓ COMPLETED
 
 ### Folder Structure Created

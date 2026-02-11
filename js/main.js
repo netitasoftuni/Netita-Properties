@@ -235,6 +235,54 @@ const HeroSearchHandler = {
     
     handleSearch() {
         const query = this.searchInput?.value.trim() || '';
+
+        // If user pasted a local property-details URL, route directly to that property.
+        // Examples:
+        // - http://localhost:5173/property-details.html?id=3
+        // - property-details.html?id=3
+        // - /property-details.html?id=3
+        if (/property-details\.html\?/i.test(query) && /[?&]id=\d+/i.test(query)) {
+            try {
+                const u = new URL(query, window.location.origin);
+                const id = parseInt(u.searchParams.get('id'), 10);
+                if (Number.isFinite(id) && id > 0) {
+                    window.location.href = `property-details.html?id=${id}&ai=1`;
+                    return;
+                }
+            } catch (e) {
+                // fall through
+            }
+        }
+
+        // Guard against placeholder URLs like "https://www.imoti.net/..."
+        if ((query.includes('...') || query.includes('…')) && /^https:\/\/(?:www\.)?imoti\.net\//i.test(query)) {
+            alert('Please paste the full imoti.net listing URL (no "...").');
+            return;
+        }
+
+        // If user pasted an imoti.net listing URL, route to AI insights mode.
+        if (/^https:\/\/(?:www\.)?imoti\.net\//i.test(query)) {
+            // If it's just the homepage, prompt for a listing URL.
+            if (/^https:\/\/(?:www\.)?imoti\.net\/?$/i.test(query)) {
+                alert('Please paste a specific imoti.net listing URL (a property page), not the homepage.');
+                return;
+            }
+
+            // Locale landing pages like /bg are not a single property listing.
+            if (/^https:\/\/(?:www\.)?imoti\.net\/(bg|en|ru)\/?$/i.test(query)) {
+                alert('Please open a single property ad on imoti.net and paste that full listing URL (not https://www.imoti.net/bg).');
+                return;
+            }
+
+            // Search/results pages contain multiple listings (e.g. /obiavi/...) and cannot be analyzed as a single property.
+            if (/^https:\/\/(?:www\.)?imoti\.net\/(?:bg\/)?obiavi\//i.test(query)) {
+                alert('This is an imoti.net results page (multiple listings). Please click one property to open its ad page and paste that URL.');
+                return;
+            }
+            const url = `property-details.html?imotiUrl=${encodeURIComponent(query)}`;
+            window.location.href = url;
+            return;
+        }
         const listingType = this.listingTypeSelect?.value || '';
         const location = this.locationSelect?.value || '';
         const propertyType = this.propertyTypeSelect?.value || '';

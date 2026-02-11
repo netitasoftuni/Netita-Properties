@@ -1,0 +1,15 @@
+{
+  "name": "netita-properties",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Netita Properties - static site with local API for AI property intelligence",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node server/server.js",
+    "start": "node server/server.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "express": "^4.19.2"
+  }
+}

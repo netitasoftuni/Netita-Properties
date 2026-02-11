@@ -173,6 +173,47 @@ const ListingsHandler = {
         // Populate filters from URL params if present
         if (!params) return;
 
+        // If someone pasted an imoti URL (or a property-details link containing imotiUrl)
+        // into the listings search, route them directly to the AI insights view.
+        if (params.search) {
+            const raw = String(params.search).trim();
+            let imotiUrl = null;
+            let localId = null;
+
+            // Direct imoti URL pasted
+            if (/^https?:\/\/(?:www\.)?imoti\.net\//i.test(raw)) {
+                imotiUrl = raw;
+            } else if (/imotiUrl=/i.test(raw)) {
+                // A full/relative URL that contains ?imotiUrl=...
+                try {
+                    const u = new URL(raw, window.location.origin);
+                    const embedded = u.searchParams.get('imotiUrl');
+                    if (embedded) imotiUrl = embedded;
+                } catch (e) {
+                    // ignore
+                }
+            } else if (/property-details\.html\?/i.test(raw) && /[?&]id=\d+/i.test(raw)) {
+                // A full/relative URL that contains ?id=...
+                try {
+                    const u = new URL(raw, window.location.origin);
+                    const id = parseInt(u.searchParams.get('id'), 10);
+                    if (Number.isFinite(id) && id > 0) localId = id;
+                } catch (e) {
+                    // ignore
+                }
+            }
+
+            if (imotiUrl) {
+                window.location.href = `property-details.html?imotiUrl=${encodeURIComponent(imotiUrl)}`;
+                return;
+            }
+
+            if (localId) {
+                window.location.href = `property-details.html?id=${localId}&ai=1`;
+                return;
+            }
+        }
+
         if (params.search && this.locationInput) {
             this.locationInput.value = params.search;
         }

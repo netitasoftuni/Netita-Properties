@@ -1,0 +1,51 @@
+{
+  "default": {
+    "avg_price_per_m2": 2500,
+    "avg_rent_per_m2": 12,
+    "growth_pct_yoy": 3.5,
+    "demand_index": 55,
+    "liquidity_index": 55
+  },
+  "districts": [
+    {
+      "name": "Sofia Center",
+      "avg_price_per_m2": 3600,
+      "avg_rent_per_m2": 16,
+      "growth_pct_yoy": 4.2,
+      "demand_index": 78,
+      "liquidity_index": 80
+    },
+    {
+      "name": "Lozenets",
+      "avg_price_per_m2": 3400,
+      "avg_rent_per_m2": 16,
+      "growth_pct_yoy": 4.0,
+      "demand_index": 75,
+      "liquidity_index": 72
+    },
+    {
+      "name": "Vitosha",
+      "avg_price_per_m2": 2800,
+      "avg_rent_per_m2": 14,
+      "growth_pct_yoy": 4.6,
+      "demand_index": 70,
+      "liquidity_index": 62
+    },
+    {
+      "name": "Mladost",
+      "avg_price_per_m2": 2600,
+      "avg_rent_per_m2": 13,
+      "growth_pct_yoy": 4.8,
+      "demand_index": 72,
+      "liquidity_index": 65
+    },
+    {
+      "name": "Studentski Grad",
+      "avg_price_per_m2": 2400,
+      "avg_rent_per_m2": 15,
+      "growth_pct_yoy": 3.8,
+      "demand_index": 82,
+      "liquidity_index": 60
+    }
+  ]
+}
