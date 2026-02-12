@@ -353,7 +353,14 @@
     font-size: var(--font-size-base);
     font-family: var(--font-family-base);
     color: var(--color-text);
+    background-color: var(--color-background);
+    caret-color: var(--color-text);
     transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+    color: var(--color-text-light);
 }
 
 .form-input:focus,
