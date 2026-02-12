@@ -425,3 +425,14 @@ const properties = [
   }
 ];
 
+// Make the dataset available in both environments:
+// - Browser: referenced by existing <script src="data/properties.js">
+// - Node.js: reused by the local Express API
+if (typeof window !== 'undefined') {
+  window.properties = properties;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = properties;
+}
+

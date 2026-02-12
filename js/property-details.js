@@ -5,6 +5,7 @@
 
 const PropertyDetailsHandler = {
     property: null,
+    allProperties: [],
     currentImageIndex: 0,
     images: [],
     imotiUrl: null,
@@ -25,7 +26,7 @@ const PropertyDetailsHandler = {
         'Trendy Varna': { avg_price_per_m2: 1750, avg_rent_per_m2: 10.5, growth_pct_yoy: 3.2, demand_index: 65, liquidity_index: 58 }
     },
     
-    init() {
+    async init() {
         const params = APP.Utilities.getQueryParams();
         // AI insights mode (imoti.net URL)
         if (params.imotiUrl) {
@@ -42,8 +43,9 @@ const PropertyDetailsHandler = {
             this.showError('No property specified');
             return;
         }
-        
-        this.property = APP.properties.find(p => p.id === propertyId);
+
+        this.allProperties = await this.loadProperties();
+        this.property = this.allProperties.find(p => p.id === propertyId);
         
         if (!this.property) {
             this.showError('Property not found');
@@ -71,6 +73,47 @@ const PropertyDetailsHandler = {
         
         this.render();
         this.attachEventListeners();
+    },
+
+    async loadProperties() {
+        try {
+            const res = await fetch('/api/properties', {
+                headers: { 'accept': 'application/json' }
+            });
+
+            const data = await res.json().catch(() => null);
+            if (!res.ok || !Array.isArray(data)) {
+                throw new Error('Invalid API response');
+            }
+
+            return data;
+        } catch (e) {
+            // Fallback for static/offline usage
+            if (window.APP && Array.isArray(window.APP.properties)) return window.APP.properties;
+            if (Array.isArray(window.properties)) return window.properties;
+            if (typeof properties !== 'undefined' && Array.isArray(properties)) return properties;
+
+            // Last resort: try loading the legacy dataset script dynamically.
+            try {
+                const alreadyRequested = document.querySelector('script[data-properties-loader="1"]');
+                if (!alreadyRequested) {
+                    await new Promise((resolve, reject) => {
+                        const s = document.createElement('script');
+                        s.src = 'data/properties.js';
+                        s.async = true;
+                        s.setAttribute('data-properties-loader', '1');
+                        s.onload = () => resolve();
+                        s.onerror = () => reject(new Error('Failed to load data/properties.js'));
+                        document.head.appendChild(s);
+                    });
+                }
+            } catch (e2) {
+                // ignore
+            }
+
+            if (Array.isArray(window.properties)) return window.properties;
+            return [];
+        }
     },
 
     renderLocalAiInsights() {
@@ -363,6 +406,36 @@ const PropertyDetailsHandler = {
         
         const localInsights = this.computeLocalInsights(this.property);
 
+        const safeDescription = (typeof this.property.description === 'string' && this.property.description.trim())
+            ? this.property.description
+            : 'No description provided.';
+
+        const safeType = (typeof this.property.type === 'string' && this.property.type.trim())
+            ? this.property.type
+            : '—';
+
+        const safeYearBuilt = Number.isFinite(Number(this.property.yearBuilt))
+            ? Number(this.property.yearBuilt)
+            : '—';
+
+        const safeAmenities = Array.isArray(this.property.amenities)
+            ? this.property.amenities
+            : [];
+
+        let safeListed = '—';
+        if (typeof this.property.listingDate === 'string' && this.property.listingDate.trim()) {
+            const d = new Date(this.property.listingDate);
+            if (!Number.isNaN(d.getTime())) {
+                safeListed = d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            }
+        }
+
+        const price = Number(this.property.price);
+        const sqft = Number(this.property.sqft);
+        const safePricePerSqft = (Number.isFinite(price) && Number.isFinite(sqft) && sqft > 0)
+            ? APP.Utilities.formatCurrency(Math.round(price / sqft))
+            : '—';
+
         // Build property details HTML with gallery
         const detailsHTML = `
             <div class="container">
@@ -432,13 +505,13 @@ const PropertyDetailsHandler = {
                             </div>
                             <div class="property-details__meta-item">
                                 <span class="property-details__meta-label">Year Built</span>
-                                <span class="property-details__meta-value">${this.property.yearBuilt}</span>
+                                <span class="property-details__meta-value">${safeYearBuilt}</span>
                             </div>
                         </div>
                         
                         <div class="property-details__description">
                             <h3 style="font-size: var(--font-size-lg); font-weight: var(--font-weight-bold); margin-bottom: var(--spacing-base);">About This Property</h3>
-                            <p>${this.property.description}</p>
+                            <p>${safeDescription}</p>
                         </div>
 
                         ${localInsights ? `
@@ -477,16 +550,18 @@ const PropertyDetailsHandler = {
                         <div class="property-details__amenities">
                             <h3 class="property-details__amenities-title">Amenities & Features</h3>
                             <ul class="property-details__amenities-list">
-                                ${this.property.amenities.map(amenity => `
-                                    <li class="property-details__amenities-item">${amenity}</li>
-                                `).join('')}
+                                ${safeAmenities.length > 0
+                                    ? safeAmenities.map(amenity => `
+                                        <li class="property-details__amenities-item">${amenity}</li>
+                                    `).join('')
+                                    : '<li class="property-details__amenities-item">No amenities listed</li>'}
                             </ul>
                         </div>
                         
                         <div style="padding-top: var(--spacing-lg); border-top: 1px solid var(--color-border);">
                             <p style="color: var(--color-text-lighter); font-size: var(--font-size-sm);">
-                                <strong>Property Type:</strong> ${this.property.type}<br>
-                                <strong>Listed:</strong> ${new Date(this.property.listingDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                <strong>Property Type:</strong> ${safeType}<br>
+                                <strong>Listed:</strong> ${safeListed}
                             </p>
                         </div>
                     </div>
@@ -499,7 +574,7 @@ const PropertyDetailsHandler = {
                                 <dd>#${String(this.property.id).padStart(5, '0')}</dd>
                                 
                                 <dt style="font-weight: var(--font-weight-semibold); color: var(--color-text); margin-top: var(--spacing-base);">Price per Sqft</dt>
-                                <dd>${APP.Utilities.formatCurrency(Math.round(this.property.price / this.property.sqft))}</dd>
+                                <dd>${safePricePerSqft}</dd>
                                 
                                 <dt style="font-weight: var(--font-weight-semibold); color: var(--color-text); margin-top: var(--spacing-base);">Status</dt>
                                 <dd><span style="background-color: var(--color-success); color: white; padding: 2px 8px; border-radius: var(--radius-sm); font-size: var(--font-size-xs);">Available</span></dd>
@@ -524,7 +599,7 @@ const PropertyDetailsHandler = {
         const similarContainer = document.getElementById('similarProperties');
         
         // Find similar properties (same type or location, excluding current)
-        const similar = APP.properties.filter(p => 
+        const similar = this.allProperties.filter(p => 
             p.id !== this.property.id && 
             (p.type === this.property.type || p.location === this.property.location)
         ).slice(0, 3);

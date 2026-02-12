@@ -156,7 +156,7 @@ const FeaturedPropertiesHandler = {
         if (!container) return;
         
         // Get first 6 properties as featured
-        const featuredProperties = properties.slice(0, 6);
+        const featuredProperties = (APP.properties || []).slice(0, 6);
         
         // Clear skeleton cards
         container.innerHTML = '';
@@ -203,8 +203,8 @@ const HeroSearchHandler = {
         if (!this.searchInput || !this.searchBtn) return;
 
         // Populate property types from properties data if available
-        if (typeof properties !== 'undefined' && this.propertyTypeSelect) {
-            const types = Array.from(new Set(properties.map(p => p.type).filter(Boolean)));
+        if (Array.isArray(APP.properties) && this.propertyTypeSelect) {
+            const types = Array.from(new Set(APP.properties.map(p => p.type).filter(Boolean)));
             types.forEach(t => {
                 const opt = document.createElement('option');
                 opt.value = t;
@@ -214,8 +214,8 @@ const HeroSearchHandler = {
         }
 
         // If location select has only the default, try populating from properties
-        if (typeof properties !== 'undefined' && this.locationSelect && this.locationSelect.options.length <= 1) {
-            const locs = Array.from(new Set(properties.map(p => p.location).filter(Boolean)));
+        if (Array.isArray(APP.properties) && this.locationSelect && this.locationSelect.options.length <= 1) {
+            const locs = Array.from(new Set(APP.properties.map(p => p.location).filter(Boolean)));
             locs.sort();
             locs.forEach(l => {
                 const opt = document.createElement('option');
@@ -362,11 +362,54 @@ const Utilities = {
 // Application Initialization
 // ============================================
 
-function initializeApp() {
-    // Check if properties data is loaded
-    if (typeof properties === 'undefined') {
-        console.error('Properties data not loaded. Make sure data/properties.js is included before main.js');
-        return;
+async function loadPropertiesFromApi() {
+    try {
+        const res = await fetch('/api/properties', {
+            headers: { 'accept': 'application/json' }
+        });
+
+        const data = await res.json().catch(() => null);
+        if (!res.ok || !Array.isArray(data)) {
+            throw new Error('Invalid API response');
+        }
+
+        return data;
+    } catch (e) {
+        // Fallback for static/offline usage
+        if (Array.isArray(window.properties)) return window.properties;
+        if (typeof properties !== 'undefined' && Array.isArray(properties)) return properties;
+
+        // Last resort: load the legacy dataset script dynamically.
+        // This helps when using a static server (e.g. Live Server) that doesn't expose /api/*.
+        try {
+            const alreadyRequested = document.querySelector('script[data-properties-loader="1"]');
+            if (!alreadyRequested) {
+                await new Promise((resolve, reject) => {
+                    const s = document.createElement('script');
+                    s.src = 'data/properties.js';
+                    s.async = true;
+                    s.setAttribute('data-properties-loader', '1');
+                    s.onload = () => resolve();
+                    s.onerror = () => reject(new Error('Failed to load data/properties.js'));
+                    document.head.appendChild(s);
+                });
+            }
+        } catch (e2) {
+            // ignore
+        }
+
+        if (Array.isArray(window.properties)) return window.properties;
+        return [];
+    }
+}
+
+async function initializeApp() {
+    // Hydrate properties via API (falls back to local bundled dataset)
+    const loaded = await loadPropertiesFromApi();
+    if (Array.isArray(loaded) && loaded.length) {
+        APP.properties = loaded;
+        // Keep legacy access for any remaining scripts
+        window.properties = loaded;
     }
     
     // Initialize modules
@@ -381,17 +424,21 @@ function initializeApp() {
 
 // Initialize app when DOM is ready
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initializeApp);
+    document.addEventListener('DOMContentLoaded', () => initializeApp().catch((e) => console.error(e)));
 } else {
-    initializeApp();
+    initializeApp().catch((e) => console.error(e));
 }
 
 // ============================================
 // Expose utilities and data globally for other pages
 // ============================================
 
+const _initialProperties = Array.isArray(window.properties)
+    ? window.properties
+    : (typeof properties !== 'undefined' && Array.isArray(properties) ? properties : []);
+
 window.APP = {
-    properties,
+    properties: _initialProperties,
     Utilities,
     PropertyCardFactory,
     NavigationHandler,

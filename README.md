@@ -1,7 +1,11 @@
 # Netita Properties - Development Guide
 
 ## Project Overview
-Netita Properties is a responsive real estate website built with vanilla HTML5, CSS3, and JavaScript. It provides property listings, search functionality, filtering, and detailed property information without any backend dependencies.
+Netita Properties is a responsive real estate website built with vanilla HTML5, CSS3, and JavaScript. It includes a small local Node/Express server that:
+
+- Serves the static site
+- Exposes a JSON API for the bundled property dataset
+- Provides an optional AI insights endpoint for analyzing `imoti.net` URLs
 
 ---
 
@@ -27,10 +31,39 @@ Windows note:
 - If PowerShell blocks `npm` scripts, see [server/README_LOCAL_SETUP.md](server/README_LOCAL_SETUP.md).
 
 Open:
-- http://localhost:5173
+- The server prints the exact URL (default is `http://localhost:5173`).
+- If port `5173` is busy, it automatically retries `5174`, `5175`, etc.
 
 API:
 - `POST /api/imoti/analyze` with JSON body: `{ "url": "https://www.imoti.net/..." }`
+
+---
+
+## Properties Dataset API (Local)
+
+The app now loads property listings from the local API:
+
+- `GET /api/properties` — all properties
+- `GET /api/properties/:id` — one property
+- `POST /api/properties` — create (JSON persistence)
+- `PATCH /api/properties/:id` — update (JSON persistence)
+- `DELETE /api/properties/:id` — delete (JSON persistence)
+
+### Where the data lives
+
+The server persists properties to a local JSON file:
+
+- [server/data/properties.json](server/data/properties.json)
+
+On first run, if the JSON file does not exist, it is automatically **seeded** from the bundled dataset:
+
+- [data/properties.js](data/properties.js)
+
+To add/edit properties right now (test project / no DB):
+
+Option A (recommended now): use the API routes above (POST/PATCH/DELETE). Changes are saved to [server/data/properties.json](server/data/properties.json).
+
+Option B (seed reset): delete [server/data/properties.json](server/data/properties.json) and restart `npm run dev` to re-seed from [data/properties.js](data/properties.js).
 
 ### Frontend flow
 
@@ -149,7 +182,8 @@ Netita Properties/
 ## How It Works - Phase 1 Architecture
 
 ### Data Flow
-1. **Properties Data** (`data/properties.js`) is loaded first
+1. **Server** (`server/server.js`) serves the static site and the API
+2. **Properties Data** is fetched from `GET /api/properties` (with a fallback to load `data/properties.js` dynamically when the API is unavailable)
 2. **CSS** (`css/style.css`) applies design system and component styles
 3. **JavaScript** (`js/main.js`) initializes when DOM is ready
 4. Modules render components and handle user interactions
@@ -228,9 +262,10 @@ window.APP.PropertyCardFactory     // Card factory
 
 ## Development Notes
 
-- **No dependencies** - Pure vanilla JavaScript, HTML5, CSS3
+- **Frontend** - Pure vanilla JavaScript, HTML5, CSS3
+- **Backend (local)** - Node.js + Express (see `npm run dev`)
 - **Browser support** - Modern browsers (Chrome, Firefox, Safari, Edge)
-- **Data source** - Static JavaScript arrays (no backend required)
+- **Data source** - Served via local API (`GET /api/properties`) backed by [data/properties.js](data/properties.js)
 - **Image handling** - Placeholder URLs with fallback support
 - **Performance** - Minimal, optimized CSS with CSS variables
 - **Accessibility** - Semantic HTML, ARIA labels, keyboard navigation support

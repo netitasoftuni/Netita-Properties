@@ -6,14 +6,60 @@
 const ListingsHandler = {
     currentPage: 1,
     itemsPerPage: 12,
-    filteredProperties: [...properties],
+    allProperties: [],
+    filteredProperties: [],
     
-    init() {
+    async init() {
         this.cacheElements();
         this.attachEventListeners();
         this.loadFromURL();
+
+        this.allProperties = await this.loadProperties();
+        this.filteredProperties = [...this.allProperties];
+
         // Apply filters after loading any URL state
         this.applyFilters();
+    },
+
+    async loadProperties() {
+        try {
+            const res = await fetch('/api/properties', {
+                headers: { 'accept': 'application/json' }
+            });
+
+            const data = await res.json().catch(() => null);
+            if (!res.ok || !Array.isArray(data)) {
+                throw new Error('Invalid API response');
+            }
+
+            return data;
+        } catch (e) {
+            // Fallback for static/offline usage
+            if (Array.isArray(window.properties)) return window.properties;
+            if (window.APP && Array.isArray(window.APP.properties)) return window.APP.properties;
+            if (typeof properties !== 'undefined' && Array.isArray(properties)) return properties;
+
+            // Last resort: try loading the legacy dataset script dynamically.
+            try {
+                const alreadyRequested = document.querySelector('script[data-properties-loader="1"]');
+                if (!alreadyRequested) {
+                    await new Promise((resolve, reject) => {
+                        const s = document.createElement('script');
+                        s.src = 'data/properties.js';
+                        s.async = true;
+                        s.setAttribute('data-properties-loader', '1');
+                        s.onload = () => resolve();
+                        s.onerror = () => reject(new Error('Failed to load data/properties.js'));
+                        document.head.appendChild(s);
+                    });
+                }
+            } catch (e2) {
+                // ignore
+            }
+
+            if (Array.isArray(window.properties)) return window.properties;
+            return [];
+        }
     },
     
     cacheElements() {
@@ -273,7 +319,7 @@ const ListingsHandler = {
             .map(cb => parseInt(cb.value));
         
         // Filter properties
-        this.filteredProperties = properties.filter(property => {
+        this.filteredProperties = this.allProperties.filter(property => {
             // Listing type filter (only if property explicitly has listingType)
             const listingType = this.listingType || '';
             if (listingType) {
@@ -520,7 +566,7 @@ const ListingsHandler = {
         this.bedroomsCheckboxes.forEach(cb => cb.checked = false);
         this.bathroomsCheckboxes.forEach(cb => cb.checked = false);
         
-        this.filteredProperties = [...properties];
+        this.filteredProperties = [...this.allProperties];
         this.currentPage = 1;
         // Clear URL state
         history.replaceState(null, '', 'listings.html');
