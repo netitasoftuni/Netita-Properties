@@ -7,6 +7,7 @@
 
   const Dom = {
     status: () => document.getElementById('adminStatus'),
+    analytics: () => document.getElementById('adminAnalytics'),
     tbody: () => document.getElementById('propertiesTableBody'),
     form: () => document.getElementById('propertyForm'),
     formTitle: () => document.getElementById('propertyFormTitle'),
@@ -54,6 +55,88 @@
     const number = Number(value);
     if (!Number.isFinite(number)) return String(value);
     return new Intl.NumberFormat(undefined, { style: 'currency', currency: 'EUR' }).format(number);
+  }
+
+  function formatNumber(value, { maximumFractionDigits = 0 } = {}) {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return '—';
+    return new Intl.NumberFormat(undefined, { maximumFractionDigits }).format(n);
+  }
+
+  function median(values) {
+    if (!Array.isArray(values) || values.length === 0) return null;
+    const sorted = [...values].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    if (sorted.length % 2 === 1) return sorted[mid];
+    return (sorted[mid - 1] + sorted[mid]) / 2;
+  }
+
+  function average(values) {
+    if (!Array.isArray(values) || values.length === 0) return null;
+    const sum = values.reduce((acc, n) => acc + n, 0);
+    return sum / values.length;
+  }
+
+  function finiteNumber(value) {
+    const n = Number(value);
+    return Number.isFinite(n) ? n : null;
+  }
+
+  function computePropertiesAnalytics(list) {
+    const properties = Array.isArray(list) ? list : [];
+    const prices = [];
+    const sqfts = [];
+    const pricePerSqft = [];
+
+    properties.forEach((p) => {
+      const price = finiteNumber(p && p.price);
+      const sqft = finiteNumber(p && p.sqft);
+
+      if (price !== null) prices.push(price);
+      if (sqft !== null) sqfts.push(sqft);
+      if (price !== null && sqft !== null && sqft > 0) pricePerSqft.push(price / sqft);
+    });
+
+    return {
+      count: properties.length,
+      avgPrice: average(prices),
+      medianPrice: median(prices),
+      avgSqft: average(sqfts),
+      avgPricePerSqft: average(pricePerSqft)
+    };
+  }
+
+  function renderAnalytics(analytics) {
+    const root = Dom.analytics();
+    if (!root) return;
+
+    const a = analytics || {};
+
+    root.innerHTML = `
+<div class="admin-analytics-card">
+  <div class="admin-analytics-card__label">Total Properties</div>
+  <div class="admin-analytics-card__value">${escapeHtml(formatNumber(a.count))}</div>
+</div>
+
+<div class="admin-analytics-card">
+  <div class="admin-analytics-card__label">Average Price</div>
+  <div class="admin-analytics-card__value">${escapeHtml(a.avgPrice === null ? '—' : formatCurrency(a.avgPrice))}</div>
+</div>
+
+<div class="admin-analytics-card">
+  <div class="admin-analytics-card__label">Median Price</div>
+  <div class="admin-analytics-card__value">${escapeHtml(a.medianPrice === null ? '—' : formatCurrency(a.medianPrice))}</div>
+</div>
+
+<div class="admin-analytics-card">
+  <div class="admin-analytics-card__label">Average Sqft</div>
+  <div class="admin-analytics-card__value">${escapeHtml(formatNumber(a.avgSqft, { maximumFractionDigits: 0 }))}</div>
+</div>
+
+<div class="admin-analytics-card">
+  <div class="admin-analytics-card__label">Average Price / Sqft</div>
+  <div class="admin-analytics-card__value">${escapeHtml(a.avgPricePerSqft === null ? '—' : formatCurrency(a.avgPricePerSqft))}</div>
+</div>`;
   }
 
   function normalizeNumber(value, { allowFloat = false } = {}) {
@@ -142,14 +225,14 @@
     const sqft = normalizeNumber(Dom.sqft().value, { allowFloat: true });
     const yearBuilt = normalizeNumber(Dom.yearBuilt()?.value, { allowFloat: false });
 
+    let ok = true;
+
     const listingType = Dom.listingType()?.value || 'sale';
     const allowedListingTypes = new Set(['sale', 'rent', 'rent_per_day']);
     if (!allowedListingTypes.has(listingType)) {
       setFieldError(Dom.listingType(), Dom.fieldError('listingTypeError'), 'Listing type must be For Sale, For Rent, or Rent per Day');
       ok = false;
     }
-
-    let ok = true;
 
     if (!address) {
       setFieldError(Dom.address(), Dom.fieldError('addressError'), 'Address is required');
@@ -553,13 +636,16 @@
       try {
         this.properties = await this.store.getAll();
         renderTable(this.properties);
+        renderAnalytics(computePropertiesAnalytics(this.properties));
         setStatus(`Mode: ${this.store.modeLabel} — ${this.properties.length} properties`);
       } catch (e) {
         setStatus(`Mode: ${this.store.modeLabel} — failed to load properties`);
         const tbody = Dom.tbody();
         if (tbody) {
-          tbody.innerHTML = '<tr><td colspan="6">Failed to load properties.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="7">Failed to load properties.</td></tr>';
         }
+
+        renderAnalytics(null);
       }
     }
   };

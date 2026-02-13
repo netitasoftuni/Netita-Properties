@@ -3,7 +3,7 @@
     "id": 1,
     "address": "Ulitsa Vitosha, Sofia",
     "location": "Sofia City",
-    "price": 450000,
+    "price": 150000,
     "bedrooms": 3,
     "bathrooms": 2,
     "sqft": 2100,
@@ -23,7 +23,8 @@
       "Patio",
       "Garden"
     ],
-    "listingDate": "2025-12-15"
+    "listingDate": "2025-12-15",
+    "listingType": "sale"
   },
   {
     "id": 2,
@@ -47,13 +48,14 @@
       "Gym",
       "Security"
     ],
-    "listingDate": "2025-12-10"
+    "listingDate": "2025-12-10",
+    "listingType": "sale"
   },
   {
     "id": 3,
     "address": "Svoboda Street, Haskovo",
     "location": "Haskovo",
-    "price": 520000,
+    "price": 67000,
     "bedrooms": 1,
     "bathrooms": 1,
     "sqft": 2800,
@@ -72,13 +74,14 @@
       "Deck",
       "Sprinkler System"
     ],
-    "listingDate": "2025-12-08"
+    "listingDate": "2025-12-08",
+    "listingType": "rent"
   },
   {
     "id": 4,
     "address": "General Gurko Street, Gabrovo",
     "location": "Gabrovo",
-    "price": 295000,
+    "price": 95000,
     "bedrooms": 1,
     "bathrooms": 1,
     "sqft": 1200,
@@ -98,7 +101,8 @@
       "Hardwood Floors",
       "Downtown Location"
     ],
-    "listingDate": "2025-12-05"
+    "listingDate": "2025-12-05",
+    "listingType": "sale"
   },
   {
     "id": 5,
@@ -123,7 +127,8 @@
       "Barn",
       "Pasture"
     ],
-    "listingDate": "2025-12-01"
+    "listingDate": "2025-12-01",
+    "listingType": "sale"
   },
   {
     "id": 6,
@@ -148,13 +153,14 @@
       "Wine Cellar",
       "Smart Home"
     ],
-    "listingDate": "2025-11-28"
+    "listingDate": "2025-11-28",
+    "listingType": "rent"
   },
   {
     "id": 7,
     "address": "Vasil Levski Street, Vidin",
     "location": "Vidin",
-    "price": 580000,
+    "price": 180000,
     "bedrooms": 4,
     "bathrooms": 3,
     "sqft": 2600,
@@ -177,13 +183,14 @@
       "Hot Tub",
       "Boat House"
     ],
-    "listingDate": "2025-11-25"
+    "listingDate": "2025-11-25",
+    "listingType": "rent_per_day"
   },
   {
     "id": 8,
     "address": "Ulitsa Vitosha, Sofia",
     "location": "Sofia City",
-    "price": 375000,
+    "price": 175000,
     "bedrooms": 3,
     "bathrooms": 2,
     "sqft": 1950,
@@ -204,7 +211,8 @@
       "Wraparound Porch",
       "Crown Molding"
     ],
-    "listingDate": "2025-11-22"
+    "listingDate": "2025-11-22",
+    "listingType": "sale"
   },
   {
     "id": 9,
@@ -235,13 +243,14 @@
       "Open Floor Plan",
       "Industrial Feel"
     ],
-    "listingDate": "2025-11-20"
+    "listingDate": "2025-11-20",
+    "listingType": "rent"
   },
   {
     "id": 10,
     "address": "Aleksandrovska Street, Burgas",
     "location": "Burgas",
-    "price": 465000,
+    "price": 65000,
     "bedrooms": 1,
     "bathrooms": 1,
     "sqft": 2400,
@@ -262,7 +271,8 @@
       "Deck",
       "Near Schools"
     ],
-    "listingDate": "2025-11-18"
+    "listingDate": "2025-11-18",
+    "listingType": "sale"
   },
   {
     "id": 11,
@@ -285,7 +295,8 @@
       "Country Club",
       "Security Gate"
     ],
-    "listingDate": "2025-11-15"
+    "listingDate": "2025-11-15",
+    "listingType": "sale"
   },
   {
     "id": 12,
@@ -311,13 +322,14 @@
       "Rooftop Terrace",
       "In-Unit Laundry"
     ],
-    "listingDate": "2025-11-12"
+    "listingDate": "2025-11-12",
+    "listingType": "rent"
   },
   {
     "id": 13,
     "address": "Ulitsa Vitosha, Sofia",
     "location": "Sofia City",
-    "price": 720000,
+    "price": 220000,
     "bedrooms": 5,
     "bathrooms": 4,
     "sqft": 3500,
@@ -336,7 +348,8 @@
       "Patio",
       "Wave Access"
     ],
-    "listingDate": "2025-11-10"
+    "listingDate": "2025-11-10",
+    "listingType": "sale"
   },
   {
     "id": 14,
@@ -361,13 +374,14 @@
       "Cul-de-sac",
       "Privacy"
     ],
-    "listingDate": "2025-11-08"
+    "listingDate": "2025-11-08",
+    "listingType": "rent_per_day"
   },
   {
     "id": 15,
     "address": "Dame Gruev Street, Plovdiv",
     "location": "Plovdiv",
-    "price": 385000,
+    "price": 185000,
     "bedrooms": 2,
     "bathrooms": 2,
     "sqft": 1500,
@@ -387,7 +401,8 @@
       "Polished Concrete Floors",
       "City Views"
     ],
-    "listingDate": "2025-11-05"
+    "listingDate": "2025-11-05",
+    "listingType": "rent"
   },
   {
     "id": 16,
@@ -412,7 +427,8 @@
       "Stone Patio",
       "Ornamental Trees"
     ],
-    "listingDate": "2025-11-03"
+    "listingDate": "2025-11-03",
+    "listingType": "sale"
   },
   {
     "id": 17,
@@ -437,13 +453,14 @@
       "Close to Campus",
       "Good Condition"
     ],
-    "listingDate": "2025-11-01"
+    "listingDate": "2025-11-01",
+    "listingType": "sale"
   },
   {
     "id": 18,
     "address": "Vasil Levski Street, Vidin",
     "location": "Vidin",
-    "price": 625000,
+    "price": 225000,
     "bedrooms": 1,
     "bathrooms": 1,
     "sqft": 3000,
@@ -463,13 +480,14 @@
       "Fireplace",
       "Natural Setting"
     ],
-    "listingDate": "2025-10-28"
+    "listingDate": "2025-10-28",
+    "listingType": "rent"
   },
   {
     "id": 19,
     "address": "Baba Tonka Street, Ruse",
     "location": "Ruse",
-    "price": 555000,
+    "price": 155000,
     "bedrooms": 4,
     "bathrooms": 1,
     "sqft": 2500,
@@ -489,13 +507,14 @@
       "Executive Kitchen",
       "Spa Bathroom"
     ],
-    "listingDate": "2025-10-25"
+    "listingDate": "2025-10-25",
+    "listingType": "sale"
   },
   {
     "id": 20,
     "address": "Dame Gruev Street, Pleven",
     "location": "Pleven",
-    "price": 475000,
+    "price": 75000,
     "bedrooms": 3,
     "bathrooms": 2.5,
     "sqft": 2300,
@@ -515,6 +534,50 @@
       "Patio",
       "Nature Access"
     ],
-    "listingDate": "2025-10-22"
+    "listingDate": "2025-10-22",
+    "listingType": "sale"
+  },
+  {
+    "id": 21,
+    "address": "Ruse",
+    "location": "Ruse",
+    "listingType": "sale",
+    "price": 68000,
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "sqft": 60,
+    "image": "assets/images/Property_21/Screenshot 2026-02-13 112933.png",
+    "images": [
+      "assets/images/Property_21/Screenshot 2026-02-13 112933.png",
+      "assets/images/Property_21/Screenshot 2026-02-13 112943.png",
+      "assets/images/Property_21/Screenshot 2026-02-13 113002.png"
+    ],
+    "yearBuilt": 2025,
+    "type": "Apartment",
+    "description": "",
+    "amenities": [],
+    "listingDate": ""
+  },
+  {
+    "id": 22,
+    "address": "Varna, Troshevo",
+    "location": "Varna",
+    "listingType": "sale",
+    "price": 163000,
+    "bedrooms": 4,
+    "bathrooms": 1,
+    "sqft": 92,
+    "image": "assets/images/Property_22/Screenshot_2026_1.png",
+    "images": [
+      "assets/images/Property_22/Screenshot_2026_1.png",
+      "assets/images/Property_22/Screenshot_2026_2.png",
+      "assets/images/Property_22/Screenshot_2026_3.png",
+      "assets/images/Property_22/Screenshot_2026_4.png"
+    ],
+    "yearBuilt": null,
+    "type": "Apartment",
+    "description": "",
+    "amenities": [],
+    "listingDate": ""
   }
 ]

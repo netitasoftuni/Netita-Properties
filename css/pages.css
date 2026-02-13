@@ -541,6 +541,31 @@
     flex-wrap: wrap;
 }
 
+.admin-analytics {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: var(--spacing-base);
+}
+
+.admin-analytics-card {
+    background-color: var(--color-background-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+}
+
+.admin-analytics-card__label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-light);
+    margin-bottom: var(--spacing-sm);
+}
+
+.admin-analytics-card__value {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+}
+
 .contact-info-card__title {
     font-size: var(--font-size-lg);
     font-weight: var(--font-weight-bold);

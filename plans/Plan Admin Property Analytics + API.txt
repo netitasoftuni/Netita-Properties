@@ -1,0 +1,33 @@
+Plan: Admin Property Analytics + API
+Add a minimal “totals + averages” analytics section to the Admin dashboard that recomputes on every refresh (works both online and offline), and add a public read-only API endpoint GET /api/analytics/properties that returns the same metrics from the server-side store. This keeps the UX simple, avoids auth/CORS surprises, and doesn’t interfere with existing CRUD + smoke tests.
+
+Steps
+
+Add server-side analytics utility
+Create server/util/propertiesAnalytics.js exporting computePropertiesAnalytics(properties)
+Metrics (numbers only; ignore null/NaN): count, avgPrice, medianPrice, avgSqft, avgPricePerSqft, plus generatedAt (ISO string) computed in the route.
+Add API endpoint
+In server.js:1 add app.get('/api/analytics/properties', ...) above the wildcard fallback.
+Implementation: const properties = await readAll(); const analytics = computePropertiesAnalytics(properties); res.json({ generatedAt, analytics });
+Update the startup logs to include API: GET /api/analytics/properties.
+Add Admin HTML section
+In admin.html:52 insert a new <section class="admin-section"> after the status line and before “Existing Properties”.
+Include a container like <div id="adminAnalytics" class="admin-analytics" aria-live="polite"></div> plus a header matching existing .admin-section-header styles.
+Render analytics in Admin JS (offline-friendly)
+In admin.js:1 add Dom.analytics = () => document.getElementById('adminAnalytics').
+Add a small computePropertiesAnalytics(properties) function in admin JS (same metrics as server util).
+Add renderAnalytics(analytics) that fills the analytics container with a small grid of “cards” (e.g., Total properties, Avg price, Median price, Avg sqft, Avg €/sqft). Use existing formatCurrency() for money.
+Call renderAnalytics(computePropertiesAnalytics(this.properties)) inside AdminPropertiesHandler.refresh() right after renderTable(this.properties) (admin.js:531).
+Add minimal CSS for analytics cards
+In pages.css add .admin-analytics grid styles and .admin-analytics-card styles using existing tokens (--spacing-*, --radius-*, --color-background-alt, --color-border), so it visually matches the admin table section.
+Verification
+
+Run server and confirm endpoint: curl http://localhost:5173/api/analytics/properties (or use browser) returns JSON with numeric metrics.
+Open http://localhost:5173/admin.html and confirm Analytics updates after Create/Edit/Delete (since it hooks into AdminPropertiesHandler.refresh()).
+Run npm run smoke to ensure existing API behavior remains unchanged.
+Decisions
+
+Analytics UI computes locally from loaded properties (works offline via localStorage mode).
+GET /api/analytics/properties is public (same exposure level as GET /api/properties).
+Dashboard shows only totals + averages (no breakdown charts/top-N lists).
+G

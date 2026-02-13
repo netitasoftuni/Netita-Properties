@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 
 const { analyzeImotiUrl } = require('./services/imotiAnalyzeService');
+const { computePropertiesAnalytics } = require('./util/propertiesAnalytics');
 const {
   ensureStoreInitialized,
   readAll,
@@ -91,6 +92,21 @@ app.post('/api/imoti/analyze', async (req, res) => {
 
     res.status(status).json({
       error: { code, message }
+    });
+  }
+});
+
+app.get('/api/analytics/properties', async (req, res) => {
+  try {
+    const properties = await readAll();
+    const analytics = computePropertiesAnalytics(properties);
+    return res.status(200).json({
+      generatedAt: new Date().toISOString(),
+      analytics
+    });
+  } catch (error) {
+    return res.status(500).json({
+      error: { code: 'ANALYTICS_FAILED', message: 'Failed to compute analytics' }
     });
   }
 });
@@ -241,6 +257,7 @@ function startServer(preferredPort) {
 
       console.log(`Netita Properties running on http://localhost:${port}`);
       console.log('API: POST /api/imoti/analyze');
+      console.log('API: GET /api/analytics/properties');
       console.log('API: GET /api/properties');
       console.log('API: GET /api/properties/:id');
       console.log('API: POST /api/properties');
