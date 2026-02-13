@@ -1,0 +1,51 @@
+Plan: Admin CRUD Page (API + Offline)
+Add a new Admin page that lets you create/edit/delete properties using your existing /api/properties endpoints, styled with the existing form/button system. When the site is opened without the Express server (file:// or API unavailable), the Admin page switches to an offline mode that reads/writes the properties list in localStorage seeded from window.properties (from properties.js). Since you selected Basic Auth, protect the Admin page itself and the mutating API routes (POST/PATCH/DELETE) via HTTP Basic Auth configured with env vars.
+
+Steps
+
+Create the Admin page shell in admin.html by copying the shared header/nav/footer structure from an existing page like listings.html:1, then add:
+A .page-header title/subtitle (pattern in pages.css:44)
+A main wrapper (reuse .listings-wrapper styling pattern in pages.css:86 for padding/background)
+Section A: “Existing Properties” table with columns: ID, Address, Location, Price, Type, Actions (Edit/Delete)
+Section B: “Create / Edit Property” form using .form-* classes (see pages.css:324) and existing .button variants (see style.css:652)
+Add Admin-specific JS in js/admin.js with an AdminPropertiesHandler.init() module that:
+Detects data source:
+If location.protocol is  OR /api/properties fetch fails → use offline store (localStorage)
+Else → use API store (fetch calls to /api/properties)
+Seeds offline store once from window.properties (available via properties.js:430)
+Renders the table from the active store, wiring Edit/Delete buttons per row
+Handles form submit:
+Create: POST /api/properties (or offline insert)
+Edit: PATCH /api/properties/:id (or offline update)
+Delete: confirm + DELETE /api/properties/:id (or offline delete)
+Parses the editable fields you picked:
+Core: address, location, price, bedrooms, bathrooms, sqft, type
+Image: image (required for create per validateCreate in propertiesStore.js:69)
+Gallery: images[] (use a textarea with one path/URL per line; convert to array)
+Description: description
+Client-side validation to mirror the server’s required fields (show .form-error, set aria-invalid)
+Extend styling in pages.css to support a minimal admin table without introducing new design tokens:
+.admin-table (100% width, border, header background using existing --color-background-alt/--color-border)
+.admin-actions (layout for small Edit/Delete buttons)
+A compact responsive behavior (e.g., allow horizontal scroll on small screens rather than inventing a new mobile UI)
+Add Basic Auth protection in server.js by introducing a small middleware (e.g., requireAdminAuth) and applying it to:
+Admin static assets: GET /admin.html, GET /js/admin.js (and any admin-only assets you add)
+Mutating property routes only: POST /api/properties, PATCH /api/properties/:id, DELETE /api/properties/:id
+Configure credentials via environment variables ADMIN_USER and ADMIN_PASS (documented next step)
+Document usage in README.md:
+How to open Admin page when server is running (e.g., http://localhost:5173/admin.html)
+How to set ADMIN_USER / ADMIN_PASS on Windows PowerShell/CMD
+Explain offline mode behavior: edits are stored in browser localStorage and affect the Admin page only (unless later you decide to make other pages read from that same store)
+Verification
+
+Run npm run dev, open http://localhost:5173/admin.html, confirm Basic Auth prompts, then:
+Create a property → appears in table and persists to properties.json
+Edit a property → updates persist
+Delete a property → removed persistently
+Offline check: open admin.html directly (file://), confirm it loads from window.properties, then create/edit/delete and refresh → changes persist via localStorage.
+Sanity: ensure the public site pages still load properties via GET /api/properties unchanged.
+Decisions
+
+Basic Auth chosen over “local-only” for clearer protection.
+Admin is a single page at /admin.html (no extra routes/pages), with automatic API→offline fallback to satisfy “must work offline too.”
+No nav link to Admin by default (keeps it unobtrusive); access is via direct URL.

@@ -16,6 +16,64 @@ app.disable('x-powered-by');
 
 app.use(express.json({ limit: '32kb' }));
 
+function decodeBasicAuth(headerValue) {
+  if (typeof headerValue !== 'string') return null;
+  const parts = headerValue.split(' ');
+  if (parts.length !== 2) return null;
+  const scheme = parts[0];
+  const token = parts[1];
+  if (scheme.toLowerCase() !== 'basic') return null;
+
+  try {
+    const decoded = Buffer.from(token, 'base64').toString('utf8');
+    const idx = decoded.indexOf(':');
+    if (idx === -1) return null;
+    return {
+      user: decoded.slice(0, idx),
+      pass: decoded.slice(idx + 1)
+    };
+  } catch (e) {
+    return null;
+  }
+}
+
+function isAdminAuthEnabled() {
+  return Boolean(process.env.ADMIN_USER) && Boolean(process.env.ADMIN_PASS);
+}
+
+function requireAdminAuth(req, res, next) {
+  if (!isAdminAuthEnabled()) return next();
+
+  const creds = decodeBasicAuth(req.headers.authorization);
+  const ok = creds && creds.user === process.env.ADMIN_USER && creds.pass === process.env.ADMIN_PASS;
+  if (ok) return next();
+
+  res.setHeader('WWW-Authenticate', 'Basic realm="Netita Admin"');
+
+  if (req.path.startsWith('/api/')) {
+    return res.status(401).json({
+      error: { code: 'UNAUTHORIZED', message: 'Admin authentication required' }
+    });
+  }
+
+  return res.status(401).send('Admin authentication required');
+}
+
+function shouldProtectRequest(req) {
+  if (req.path === '/admin.html') return true;
+  if (req.path === '/js/admin.js') return true;
+
+  if (req.path === '/api/properties' && req.method === 'POST') return true;
+  if (req.path.startsWith('/api/properties/') && (req.method === 'PATCH' || req.method === 'DELETE')) return true;
+
+  return false;
+}
+
+app.use((req, res, next) => {
+  if (!shouldProtectRequest(req)) return next();
+  return requireAdminAuth(req, res, next);
+});
+
 // Serve the existing static site
 const staticRoot = path.join(__dirname, '..');
 app.use(express.static(staticRoot));

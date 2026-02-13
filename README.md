@@ -39,6 +39,43 @@ API:
 
 ---
 
+## Admin Panel (Properties CRUD)
+
+This project includes a minimal Admin page for creating, editing, and deleting properties.
+
+Open (server running):
+- `http://localhost:5173/admin.html`
+
+### Authentication (Basic Auth)
+
+Admin access is protected by HTTP Basic Auth **only when** both environment variables are set:
+- `ADMIN_USER`
+- `ADMIN_PASS`
+
+Windows PowerShell:
+- `$env:ADMIN_USER = "admin"`
+- `$env:ADMIN_PASS = "change-me"`
+- `npm run dev`
+
+Windows CMD:
+- `set ADMIN_USER=admin`
+- `set ADMIN_PASS=change-me`
+- `npm run dev`
+
+Protected endpoints:
+- `GET /admin.html`
+- `POST /api/properties`
+- `PATCH /api/properties/:id`
+- `DELETE /api/properties/:id`
+
+### Offline mode (no server)
+
+If you open `admin.html` directly (file://) or the API is unavailable, the Admin page switches to offline mode:
+- Reads the initial list from `data/properties.js`
+- Saves edits to browser `localStorage`
+
+Note: offline edits do not update `server/data/properties.json` (since the server is not running).
+
 ## Properties Dataset API (Local)
 
 The app now loads property listings from the local API:

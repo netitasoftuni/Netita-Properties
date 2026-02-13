@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin panel for managing properties on Netita Properties.">
+    <meta name="theme-color" content="#2563eb">
+    <title>Admin - Properties - Netita Properties</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header id="header" class="header">
+        <div class="container">
+            <div class="header__wrapper">
+                <div class="logo">
+                    <h1 class="logo__text">Netita Properties</h1>
+                    <p class="logo__tagline">Find Your Perfect Home</p>
+                </div>
+
+                <nav class="nav">
+                    <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+                        <span class="nav__toggle-icon"></span>
+                        <span class="nav__toggle-icon"></span>
+                        <span class="nav__toggle-icon"></span>
+                    </button>
+                    <ul class="nav__menu" id="navMenu">
+                        <li><a href="index.html" class="nav__link">Home</a></li>
+                        <li><a href="listings.html" class="nav__link">Listings</a></li>
+                        <li><a href="contact.html" class="nav__link">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="app">
+        <!-- Page Header -->
+        <section class="page-header">
+            <div class="container">
+                <h1 class="page-header__title">Admin — Properties</h1>
+                <p class="page-header__subtitle">Create, edit, and delete properties</p>
+            </div>
+        </section>
+
+        <div class="listings-wrapper">
+            <div class="container">
+                <p id="adminStatus" class="admin-status" aria-live="polite"></p>
+
+                <!-- Existing Properties -->
+                <section class="admin-section" aria-label="Existing properties">
+                    <div class="section-header admin-section-header">
+                        <h2 class="section-header__title admin-section-header__title">Existing Properties</h2>
+                        <p class="section-header__subtitle admin-section-header__subtitle">Edit or delete existing records</p>
+                    </div>
+
+                    <div class="admin-table-wrapper" role="region" aria-label="Properties table" tabindex="0">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Address</th>
+                                    <th scope="col">Location</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="propertiesTableBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Create/Edit Form -->
+                <section class="admin-section" aria-label="Create or edit a property">
+                    <div class="section-header admin-section-header">
+                        <h2 id="propertyFormTitle" class="section-header__title admin-section-header__title">Create Property</h2>
+                        <p class="section-header__subtitle admin-section-header__subtitle">Fill in the fields and save</p>
+                    </div>
+
+                    <div class="contact-form-wrapper">
+                        <form id="propertyForm" class="contact-form" novalidate>
+                            <input type="hidden" id="propertyId" value="">
+
+                            <div class="form-row">
+                                <div class="form-group form-group--half">
+                                    <label class="form-label" for="address">Address *</label>
+                                    <input type="text" id="address" class="form-input" placeholder="Street, City" required>
+                                    <span class="form-error" id="addressError"></span>
+                                </div>
+
+                                <div class="form-group form-group--half">
+                                    <label class="form-label" for="location">Location *</label>
+                                    <input type="text" id="location" class="form-input" placeholder="District / Area" required>
+                                    <span class="form-error" id="locationError"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group form-group--half">
+                                    <label class="form-label" for="type">Type</label>
+                                    <input type="text" id="type" class="form-input" placeholder="Apartment, House, ...">
+                                    <span class="form-error" id="typeError"></span>
+                                </div>
+
+                                <div class="form-group form-group--half">
+                                    <label class="form-label" for="image">Main Image Path/URL *</label>
+                                    <input type="text" id="image" class="form-input" placeholder="assets/images/Property_1/..." required>
+                                    <span class="form-error" id="imageError"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group form-group--half">
+                                    <label class="form-label" for="price">Price *</label>
+                                    <input type="number" id="price" class="form-input" placeholder="450000" required>
+                                    <span class="form-error" id="priceError"></span>
+                                </div>
+
+                                <div class="form-group form-group--half">
+                                    <label class="form-label" for="bedrooms">Bedrooms *</label>
+                                    <input type="number" id="bedrooms" class="form-input" placeholder="3" required>
+                                    <span class="form-error" id="bedroomsError"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group form-group--half">
+                                    <label class="form-label" for="bathrooms">Bathrooms *</label>
+                                    <input type="number" id="bathrooms" class="form-input" placeholder="2" required>
+                                    <span class="form-error" id="bathroomsError"></span>
+                                </div>
+
+                                <div class="form-group form-group--half">
+                                    <label class="form-label" for="sqft">Sqft *</label>
+                                    <input type="number" id="sqft" class="form-input" placeholder="2100" required>
+                                    <span class="form-error" id="sqftError"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="images">Gallery Images (one per line)</label>
+                                <textarea id="images" class="form-textarea" rows="4" placeholder="assets/images/Property_1/img1.png\nassets/images/Property_1/img2.png"></textarea>
+                                <span class="form-error" id="imagesError"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="description">Description</label>
+                                <textarea id="description" class="form-textarea" rows="5" placeholder="Short description..."></textarea>
+                                <span class="form-error" id="descriptionError"></span>
+                            </div>
+
+                            <div id="formGlobalError" class="form-error" role="alert"></div>
+                            <div id="formSuccess" class="form-success" hidden>
+                                <p id="formSuccessText"></p>
+                            </div>
+
+                            <div class="admin-form-actions">
+                                <button type="submit" id="saveButton" class="button button--primary">Save</button>
+                                <button type="button" id="resetButton" class="button button--outline">Reset</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__grid">
+                <div class="footer__column">
+                    <h4 class="footer__heading">About Netita Properties</h4>
+                    <p class="footer__text">Your trusted partner in finding the perfect property. With thousands of listings and expert agents, we make real estate simple.</p>
+                </div>
+                <div class="footer__column">
+                    <h4 class="footer__heading">Quick Links</h4>
+                    <ul class="footer__links">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="listings.html">Listings</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer__column">
+                    <h4 class="footer__heading">Contact Info</h4>
+                    <p class="footer__text">
+                        📞 +(359) 888 65 99 00<br>
+                        📧 netita@students.softuni.bg<br>
+                        📍 Sofia, Bulgaria
+                    </p>
+                </div>
+            </div>
+            <div class="footer__bottom">
+                <p>&copy; 2026 Netita Properties. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="data/properties.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
