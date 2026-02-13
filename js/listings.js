@@ -320,10 +320,10 @@ const ListingsHandler = {
         
         // Filter properties
         this.filteredProperties = this.allProperties.filter(property => {
-            // Listing type filter (only if property explicitly has listingType)
+            // Listing type filter
             const listingType = this.listingType || '';
             if (listingType) {
-                if (property.listingType && property.listingType !== listingType) {
+                if (String(property.listingType || '').trim() !== listingType) {
                     return false;
                 }
             }

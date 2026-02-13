@@ -425,14 +425,39 @@ const properties = [
   }
 ];
 
+function normalizeListingType(value) {
+  const v = String(value || '').trim().toLowerCase();
+  if (v === 'sale' || v === 'rent' || v === 'rent_per_day') return v;
+  return '';
+}
+
+function inferListingType(property) {
+  const explicit = normalizeListingType(property && property.listingType);
+  if (explicit) return explicit;
+
+  // Demo-only heuristic to create a mix of listing types.
+  const id = Number(property && property.id);
+  if (Number.isFinite(id)) {
+    if (id % 7 === 0) return 'rent_per_day';
+    if (id % 3 === 0) return 'rent';
+  }
+
+  return 'sale';
+}
+
+const normalizedProperties = properties.map((p) => ({
+  ...p,
+  listingType: inferListingType(p)
+}));
+
 // Make the dataset available in both environments:
 // - Browser: referenced by existing <script src="data/properties.js">
 // - Node.js: reused by the local Express API
 if (typeof window !== 'undefined') {
-  window.properties = properties;
+  window.properties = normalizedProperties;
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = properties;
+  module.exports = normalizedProperties;
 }
 

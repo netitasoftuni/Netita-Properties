@@ -203,7 +203,7 @@ const HeroSearchHandler = {
         if (!this.searchInput || !this.searchBtn) return;
 
         // Populate property types from properties data if available
-        if (Array.isArray(APP.properties) && this.propertyTypeSelect) {
+        if (Array.isArray(APP.properties) && this.propertyTypeSelect && this.propertyTypeSelect.options.length <= 1) {
             const types = Array.from(new Set(APP.properties.map(p => p.type).filter(Boolean)));
             types.forEach(t => {
                 const opt = document.createElement('option');

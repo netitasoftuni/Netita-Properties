@@ -14,6 +14,7 @@
 
     address: () => document.getElementById('address'),
     location: () => document.getElementById('location'),
+    listingType: () => document.getElementById('listingType'),
     type: () => document.getElementById('type'),
     image: () => document.getElementById('image'),
 
@@ -21,6 +22,7 @@
     bedrooms: () => document.getElementById('bedrooms'),
     bathrooms: () => document.getElementById('bathrooms'),
     sqft: () => document.getElementById('sqft'),
+    yearBuilt: () => document.getElementById('yearBuilt'),
 
     images: () => document.getElementById('images'),
     description: () => document.getElementById('description'),
@@ -78,12 +80,14 @@
     const errorIds = [
       'addressError',
       'locationError',
+      'listingTypeError',
       'typeError',
       'imageError',
       'priceError',
       'bedroomsError',
       'bathroomsError',
       'sqftError',
+      'yearBuiltError',
       'imagesError',
       'descriptionError'
     ];
@@ -96,12 +100,14 @@
     const fields = [
       Dom.address(),
       Dom.location(),
+      Dom.listingType(),
       Dom.type(),
       Dom.image(),
       Dom.price(),
       Dom.bedrooms(),
       Dom.bathrooms(),
       Dom.sqft(),
+      Dom.yearBuilt(),
       Dom.images(),
       Dom.description()
     ];
@@ -134,6 +140,14 @@
     const bedrooms = normalizeNumber(Dom.bedrooms().value, { allowFloat: false });
     const bathrooms = normalizeNumber(Dom.bathrooms().value, { allowFloat: true });
     const sqft = normalizeNumber(Dom.sqft().value, { allowFloat: true });
+    const yearBuilt = normalizeNumber(Dom.yearBuilt()?.value, { allowFloat: false });
+
+    const listingType = Dom.listingType()?.value || 'sale';
+    const allowedListingTypes = new Set(['sale', 'rent', 'rent_per_day']);
+    if (!allowedListingTypes.has(listingType)) {
+      setFieldError(Dom.listingType(), Dom.fieldError('listingTypeError'), 'Listing type must be For Sale, For Rent, or Rent per Day');
+      ok = false;
+    }
 
     let ok = true;
 
@@ -187,12 +201,14 @@
       value: {
         address,
         location,
+        listingType,
         type,
         image,
         price,
         bedrooms,
         bathrooms,
         sqft,
+        yearBuilt,
         images,
         description
       }
@@ -217,6 +233,7 @@
 
       Dom.address().value = property.address || '';
       Dom.location().value = property.location || '';
+      if (Dom.listingType()) Dom.listingType().value = property.listingType || 'sale';
       Dom.type().value = property.type || '';
       Dom.image().value = property.image || '';
 
@@ -224,6 +241,7 @@
       Dom.bedrooms().value = property.bedrooms ?? '';
       Dom.bathrooms().value = property.bathrooms ?? '';
       Dom.sqft().value = property.sqft ?? '';
+      if (Dom.yearBuilt()) Dom.yearBuilt().value = property.yearBuilt ?? '';
 
       Dom.images().value = Array.isArray(property.images) ? property.images.join('\n') : '';
       Dom.description().value = property.description || '';
@@ -235,6 +253,7 @@
     if (title) title.textContent = 'Create Property';
     Dom.propertyId().value = '';
     Dom.form().reset();
+    if (Dom.listingType()) Dom.listingType().value = 'sale';
     clearInlineErrors();
   }
 
@@ -243,7 +262,7 @@
     if (!tbody) return;
 
     if (!Array.isArray(list) || list.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6">No properties found.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7">No properties found.</td></tr>';
       return;
     }
 
@@ -252,6 +271,7 @@
       .sort((a, b) => Number(a.id) - Number(b.id))
       .map((p) => {
         const id = Number(p.id);
+        const listing = String(p.listingType || '').trim() || 'sale';
         return `
 <tr data-id="${escapeHtml(id)}">
   <td>${escapeHtml(id)}</td>
@@ -259,6 +279,7 @@
   <td>${escapeHtml(p.location || '')}</td>
   <td>${escapeHtml(formatCurrency(p.price))}</td>
   <td>${escapeHtml(p.type || '')}</td>
+  <td>${escapeHtml(listing)}</td>
   <td>
     <div class="admin-actions">
       <button type="button" class="button button--small button--outline" data-action="edit">Edit</button>
@@ -308,12 +329,14 @@
       return {
         address: String(payload.address || '').trim(),
         location: String(payload.location || '').trim(),
+        listingType: String(payload.listingType || '').trim(),
         type: String(payload.type || '').trim(),
         image: String(payload.image || '').trim(),
         price: normalizeNumber(payload.price, { allowFloat: true }),
         bedrooms: normalizeNumber(payload.bedrooms, { allowFloat: false }),
         bathrooms: normalizeNumber(payload.bathrooms, { allowFloat: true }),
         sqft: normalizeNumber(payload.sqft, { allowFloat: true }),
+        yearBuilt: normalizeNumber(payload.yearBuilt, { allowFloat: false }),
         images: Array.isArray(payload.images) ? payload.images.filter((x) => typeof x === 'string' && x.trim()).map((x) => x.trim()) : [],
         description: String(payload.description || '').trim()
       };

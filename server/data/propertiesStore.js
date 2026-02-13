@@ -3,6 +3,14 @@ const path = require('path');
 
 const storePath = path.join(__dirname, 'properties.json');
 
+const ALLOWED_LISTING_TYPES = new Set(['sale', 'rent', 'rent_per_day']);
+
+function normalizeListingType(value) {
+  const v = typeof value === 'string' ? value.trim().toLowerCase() : '';
+  if (!v) return '';
+  return ALLOWED_LISTING_TYPES.has(v) ? v : '';
+}
+
 async function fileExists(filePath) {
   try {
     await fs.access(filePath);
@@ -72,6 +80,14 @@ function validateCreate(payload) {
   const location = typeof payload?.location === 'string' ? payload.location.trim() : '';
   const type = typeof payload?.type === 'string' ? payload.type.trim() : '';
 
+  const listingType = normalizeListingType(payload?.listingType) || 'sale';
+  if (payload && Object.prototype.hasOwnProperty.call(payload, 'listingType')) {
+    const raw = payload.listingType;
+    if (raw !== null && raw !== undefined && String(raw).trim() && !normalizeListingType(raw)) {
+      errors.push('listingType must be one of: sale, rent, rent_per_day');
+    }
+  }
+
   const price = normalizeNumber(payload?.price, { allowFloat: true });
   const bedrooms = normalizeNumber(payload?.bedrooms);
   const bathrooms = normalizeNumber(payload?.bathrooms, { allowFloat: true });
@@ -103,6 +119,7 @@ function validateCreate(payload) {
     value: {
       address,
       location,
+      listingType,
       price,
       bedrooms,
       bathrooms,
@@ -128,6 +145,11 @@ function applyPatch(existing, patch) {
       updated[f] = typeof v === 'string' ? v.trim() : v;
     }
   });
+
+  if (patch && Object.prototype.hasOwnProperty.call(patch, 'listingType')) {
+    const next = normalizeListingType(patch.listingType);
+    if (next) updated.listingType = next;
+  }
 
   const numFields = [
     ['price', true],
@@ -161,6 +183,23 @@ function applyPatch(existing, patch) {
 
 function normalizeStoredProperty(item) {
   const safe = item && typeof item === 'object' ? { ...item } : {};
+
+  // listingType
+  // If existing stores don't have this field yet, infer a stable demo value from id
+  // so the listings hero filter works meaningfully without forcing a re-seed.
+  const normalized = normalizeListingType(safe.listingType);
+  if (normalized) {
+    safe.listingType = normalized;
+  } else {
+    const id = Number(safe.id);
+    if (Number.isFinite(id)) {
+      if (id % 7 === 0) safe.listingType = 'rent_per_day';
+      else if (id % 3 === 0) safe.listingType = 'rent';
+      else safe.listingType = 'sale';
+    } else {
+      safe.listingType = 'sale';
+    }
+  }
 
   // Strings
   const stringFields = ['address', 'location', 'image', 'type', 'description', 'listingDate'];

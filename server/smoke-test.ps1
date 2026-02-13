@@ -82,7 +82,7 @@ function Write-Ok([string]$msg) {
 
 function Write-Fail([string]$msg) {
   $script:failCount++
-  Write-Host ('FAIL: ' + $msg)
+  Write-Host ('FAIL: ' + $msg)properties
 }
 
 function Get-BasicAuthHeaders() {
@@ -224,11 +224,12 @@ if (-not $SkipCrud) {
     $createBody = @{ 
       address='Smoke Test Address'
       location='Smoke Test District'
+      listingType='sale'
       price=12345
       bedrooms=1
       bathrooms=1
       sqft=55
-      image=''
+      image='https://via.placeholder.com/300x200?text=Property+Image'
       yearBuilt=2020
       type='Apartment'
       description='Smoke test record'

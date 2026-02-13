@@ -67,6 +67,7 @@
                                     <th scope="col">Location</th>
                                     <th scope="col">Price</th>
                                     <th scope="col">Type</th>
+                                    <th scope="col">Listing</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
@@ -102,43 +103,61 @@
 
                             <div class="form-row">
                                 <div class="form-group form-group--half">
+                                    <label class="form-label" for="listingType">Listing Type</label>
+                                    <select id="listingType" class="form-input" aria-label="Listing type">
+                                        <option value="sale">For Sale</option>
+                                        <option value="rent">For Rent</option>
+                                        <option value="rent_per_day">Rent per Day</option>
+                                    </select>
+                                    <span class="form-error" id="listingTypeError"></span>
+                                </div>
+
+                                <div class="form-group form-group--half">
                                     <label class="form-label" for="type">Type</label>
                                     <input type="text" id="type" class="form-input" placeholder="Apartment, House, ...">
                                     <span class="form-error" id="typeError"></span>
                                 </div>
+                            </div>
 
+                            <div class="form-row">
                                 <div class="form-group form-group--half">
                                     <label class="form-label" for="image">Main Image Path/URL *</label>
                                     <input type="text" id="image" class="form-input" placeholder="assets/images/Property_1/..." required>
                                     <span class="form-error" id="imageError"></span>
                                 </div>
-                            </div>
 
-                            <div class="form-row">
                                 <div class="form-group form-group--half">
                                     <label class="form-label" for="price">Price *</label>
                                     <input type="number" id="price" class="form-input" placeholder="450000" required>
                                     <span class="form-error" id="priceError"></span>
                                 </div>
+                            </div>
 
+                            <div class="form-row">
                                 <div class="form-group form-group--half">
                                     <label class="form-label" for="bedrooms">Bedrooms *</label>
                                     <input type="number" id="bedrooms" class="form-input" placeholder="3" required>
                                     <span class="form-error" id="bedroomsError"></span>
                                 </div>
-                            </div>
 
-                            <div class="form-row">
                                 <div class="form-group form-group--half">
                                     <label class="form-label" for="bathrooms">Bathrooms *</label>
                                     <input type="number" id="bathrooms" class="form-input" placeholder="2" required>
                                     <span class="form-error" id="bathroomsError"></span>
                                 </div>
+                            </div>
 
+                            <div class="form-row">
                                 <div class="form-group form-group--half">
                                     <label class="form-label" for="sqft">Sqft *</label>
                                     <input type="number" id="sqft" class="form-input" placeholder="2100" required>
                                     <span class="form-error" id="sqftError"></span>
+                                </div>
+
+                                <div class="form-group form-group--half">
+                                    <label class="form-label" for="yearBuilt">Year Built</label>
+                                    <input type="number" id="yearBuilt" class="form-input" placeholder="2015">
+                                    <span class="form-error" id="yearBuiltError"></span>
                                 </div>
                             </div>
 
