@@ -1,5 +1,7 @@
 const express = require('express');
+const fs = require('fs');
 const path = require('path');
+const multer = require('multer');
 
 const { analyzeImotiUrl } = require('./services/imotiAnalyzeService');
 const { computePropertiesAnalytics } = require('./util/propertiesAnalytics');
@@ -11,6 +13,38 @@ const {
   validateCreate,
   applyPatch
 } = require('./data/propertiesStore');
+
+const uploadsDir = path.join(__dirname, '..', 'assets', 'images', 'uploads');
+try {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+} catch (e) {
+  // ignore
+}
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination(req, file, cb) {
+      cb(null, uploadsDir);
+    },
+    filename(req, file, cb) {
+      const ext = path.extname(file.originalname || '').toLowerCase();
+      const safeExt = ext && ext.length <= 10 ? ext : '';
+      const name = `${Date.now()}-${Math.random().toString(16).slice(2)}${safeExt}`;
+      cb(null, name);
+    }
+  }),
+  limits: {
+    files: 20,
+    fileSize: 5 * 1024 * 1024
+  },
+  fileFilter(req, file, cb) {
+    const okMime = typeof file.mimetype === 'string' && file.mimetype.toLowerCase().startsWith('image/');
+    const ext = path.extname(file.originalname || '').toLowerCase();
+    const okExt = ['.png', '.jpg', '.jpeg', '.webp', '.gif'].includes(ext);
+    if (okMime && okExt) return cb(null, true);
+    return cb(new Error('Only image files are allowed (.png, .jpg, .jpeg, .webp, .gif)'));
+  }
+});
 
 const app = express();
 app.disable('x-powered-by');
@@ -67,6 +101,8 @@ function shouldProtectRequest(req) {
   if (req.path === '/api/properties' && req.method === 'POST') return true;
   if (req.path.startsWith('/api/properties/') && (req.method === 'PATCH' || req.method === 'DELETE')) return true;
 
+  if (req.path === '/api/uploads/images' && req.method === 'POST') return true;
+
   return false;
 }
 
@@ -94,6 +130,41 @@ app.post('/api/imoti/analyze', async (req, res) => {
       error: { code, message }
     });
   }
+});
+
+app.post('/api/uploads/images', (req, res) => {
+  upload.array('files', 20)(req, res, (err) => {
+    if (err) {
+      return res.status(400).json({
+        error: { code: 'UPLOAD_FAILED', message: err.message || 'Upload failed' }
+      });
+    }
+
+    const files = Array.isArray(req.files) ? req.files : [];
+
+    const deletePathRaw = req.body && typeof req.body.deletePath === 'string' ? req.body.deletePath.trim() : '';
+    const deleteCandidate = deletePathRaw && deletePathRaw.startsWith('assets/images/uploads/')
+      ? path.basename(deletePathRaw)
+      : '';
+
+    const deleted = [];
+    if (deleteCandidate) {
+      try {
+        fs.unlinkSync(path.join(uploadsDir, deleteCandidate));
+        deleted.push(`assets/images/uploads/${deleteCandidate}`);
+      } catch (e) {
+        // ignore missing/locked files
+      }
+    }
+
+    const result = files.map((f) => ({
+      originalName: f.originalname,
+      size: f.size,
+      path: `assets/images/uploads/${path.basename(f.filename)}`
+    }));
+
+    return res.status(200).json({ files: result, deleted });
+  });
 });
 
 app.get('/api/analytics/properties', async (req, res) => {

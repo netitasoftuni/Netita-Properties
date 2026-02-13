@@ -1,0 +1,10 @@
+# Dependencies
+node_modules/
+
+# Temp files
+.tmp-upload.json
+.tmp-*.json
+
+# OS / editor
+.DS_Store
+Thumbs.db

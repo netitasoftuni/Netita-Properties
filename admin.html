@@ -134,6 +134,10 @@
                                     <label class="form-label" for="image">Main Image Path/URL *</label>
                                     <input type="text" id="image" class="form-input" placeholder="assets/images/Property_1/..." required>
                                     <span class="form-error" id="imageError"></span>
+
+                                    <label class="form-label" for="mainImageUpload">Upload main image</label>
+                                    <input type="file" id="mainImageUpload" class="form-input" accept="image/*">
+                                    <p id="mainImageUploadStatus" class="admin-status" aria-live="polite"></p>
                                 </div>
 
                                 <div class="form-group form-group--half">
@@ -175,6 +179,10 @@
                                 <label class="form-label" for="images">Gallery Images (one per line)</label>
                                 <textarea id="images" class="form-textarea" rows="4" placeholder="assets/images/Property_1/img1.png\nassets/images/Property_1/img2.png"></textarea>
                                 <span class="form-error" id="imagesError"></span>
+
+                                <label class="form-label" for="galleryUpload">Upload gallery images</label>
+                                <input type="file" id="galleryUpload" class="form-input" accept="image/*" multiple>
+                                <p id="galleryUploadStatus" class="admin-status" aria-live="polite"></p>
                             </div>
 
                             <div class="form-group">

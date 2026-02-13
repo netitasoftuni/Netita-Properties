@@ -18,6 +18,8 @@
     listingType: () => document.getElementById('listingType'),
     type: () => document.getElementById('type'),
     image: () => document.getElementById('image'),
+    mainImageUpload: () => document.getElementById('mainImageUpload'),
+    mainImageUploadStatus: () => document.getElementById('mainImageUploadStatus'),
 
     price: () => document.getElementById('price'),
     bedrooms: () => document.getElementById('bedrooms'),
@@ -26,6 +28,8 @@
     yearBuilt: () => document.getElementById('yearBuilt'),
 
     images: () => document.getElementById('images'),
+    galleryUpload: () => document.getElementById('galleryUpload'),
+    galleryUploadStatus: () => document.getElementById('galleryUploadStatus'),
     description: () => document.getElementById('description'),
 
     saveButton: () => document.getElementById('saveButton'),
@@ -200,6 +204,73 @@
     const el = Dom.status();
     if (!el) return;
     el.textContent = message;
+  }
+
+  function setGalleryUploadStatus(message) {
+    const el = Dom.galleryUploadStatus();
+    if (!el) return;
+    el.textContent = message || '';
+  }
+
+  function setMainImageUploadStatus(message) {
+    const el = Dom.mainImageUploadStatus();
+    if (!el) return;
+    el.textContent = message || '';
+  }
+
+  async function uploadGalleryImages(files) {
+    const form = new FormData();
+    files.forEach((f) => form.append('files', f));
+
+    const res = await fetch('/api/uploads/images', {
+      method: 'POST',
+      body: form
+    });
+
+    const contentType = res.headers.get('content-type') || '';
+    const isJson = contentType.includes('application/json');
+    const payload = isJson ? await res.json().catch(() => null) : await res.text().catch(() => null);
+
+    if (!res.ok) {
+      const message = (payload && payload.error && payload.error.message) || res.statusText || 'Upload failed';
+      const err = new Error(message);
+      err.status = res.status;
+      err.payload = payload;
+      throw err;
+    }
+
+    const uploaded = payload && Array.isArray(payload.files) ? payload.files : [];
+    return uploaded
+      .map((x) => (x && typeof x.path === 'string' ? x.path.trim() : ''))
+      .filter(Boolean);
+  }
+
+  async function uploadMainImage(file, { deletePath } = {}) {
+    const form = new FormData();
+    form.append('files', file);
+    if (deletePath) form.append('deletePath', deletePath);
+
+    const res = await fetch('/api/uploads/images', {
+      method: 'POST',
+      body: form
+    });
+
+    const contentType = res.headers.get('content-type') || '';
+    const isJson = contentType.includes('application/json');
+    const payload = isJson ? await res.json().catch(() => null) : await res.text().catch(() => null);
+
+    if (!res.ok) {
+      const message = (payload && payload.error && payload.error.message) || res.statusText || 'Upload failed';
+      const err = new Error(message);
+      err.status = res.status;
+      err.payload = payload;
+      throw err;
+    }
+
+    const uploaded = payload && Array.isArray(payload.files) ? payload.files : [];
+    const uploadedPath = uploaded[0] && typeof uploaded[0].path === 'string' ? uploaded[0].path.trim() : '';
+    const deleted = payload && Array.isArray(payload.deleted) ? payload.deleted : [];
+    return { uploadedPath, deleted };
   }
 
   function clearInlineErrors() {
@@ -587,12 +658,85 @@
       this.store = await chooseStore();
       setStatus(`Mode: ${this.store.modeLabel}`);
 
+      const uploadInput = Dom.galleryUpload();
+      if (uploadInput) {
+        const offline = String(this.store.modeLabel || '').toLowerCase().includes('offline');
+        uploadInput.disabled = offline;
+        setGalleryUploadStatus(offline ? 'Uploads require the local server (online mode).' : '');
+      }
+
+      const mainUpload = Dom.mainImageUpload();
+      if (mainUpload) {
+        const offline = String(this.store.modeLabel || '').toLowerCase().includes('offline');
+        mainUpload.disabled = offline;
+        setMainImageUploadStatus(offline ? 'Uploads require the local server (online mode).' : '');
+      }
+
       await this.refresh();
       this.bindEvents();
       setFormMode({ mode: 'create' });
     },
 
     bindEvents() {
+      const mainImageUpload = Dom.mainImageUpload();
+      if (mainImageUpload) {
+        mainImageUpload.addEventListener('change', async () => {
+          const input = Dom.mainImageUpload();
+          const imageField = Dom.image();
+          if (!input || !imageField) return;
+
+          const file = input.files && input.files[0] ? input.files[0] : null;
+          if (!file) return;
+
+          const oldPath = String(imageField.value || '').trim();
+          setMainImageUploadStatus('Uploading 1 file...');
+          try {
+            const result = await uploadMainImage(file, { deletePath: oldPath });
+            if (!result.uploadedPath) {
+              setMainImageUploadStatus('Upload failed: no path returned.');
+              return;
+            }
+            imageField.value = result.uploadedPath;
+            const deletedNote = result.deleted && result.deleted.length ? ' (replaced previous upload)' : '';
+            setMainImageUploadStatus(`Uploaded.${deletedNote}`);
+          } catch (e) {
+            setMainImageUploadStatus(e.message || 'Upload failed.');
+          } finally {
+            input.value = '';
+          }
+        });
+      }
+
+      const galleryUpload = Dom.galleryUpload();
+      if (galleryUpload) {
+        galleryUpload.addEventListener('change', async () => {
+          const input = Dom.galleryUpload();
+          const textarea = Dom.images();
+          if (!input || !textarea) return;
+
+          const files = Array.from(input.files || []);
+          if (files.length === 0) return;
+
+          setGalleryUploadStatus(`Uploading ${files.length} file(s)...`);
+          try {
+            const paths = await uploadGalleryImages(files);
+            if (paths.length === 0) {
+              setGalleryUploadStatus('No files uploaded.');
+              return;
+            }
+
+            const existing = String(textarea.value || '');
+            const prefix = existing && !existing.endsWith('\n') ? existing + '\n' : existing;
+            textarea.value = prefix + paths.join('\n');
+            setGalleryUploadStatus(`Uploaded ${paths.length} file(s).`);
+          } catch (e) {
+            setGalleryUploadStatus(e.message || 'Upload failed.');
+          } finally {
+            input.value = '';
+          }
+        });
+      }
+
       const tbody = Dom.tbody();
       if (tbody) {
         tbody.addEventListener('click', async (event) => {
