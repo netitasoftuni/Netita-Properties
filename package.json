@@ -6,7 +6,8 @@
   "type": "commonjs",
   "scripts": {
     "dev": "node server/server.js",
-    "start": "node server/server.js"
+    "start": "node server/server.js",
+    "smoke": "powershell -ExecutionPolicy Bypass -File server/smoke-test.ps1"
   },
   "dependencies": {
     "cheerio": "^1.0.0",

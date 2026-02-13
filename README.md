@@ -27,6 +27,13 @@ Commands:
 - Install: `npm install`
 - Run site + API: `npm run dev`
 
+Smoke test (PowerShell, server running):
+- `npm run smoke`
+
+Optional env vars for the smoke test:
+- `NETITA_BASE_URL` (default: `http://localhost:5173`)
+- `IMOTI_TEST_URL` (optional; if set, tests `POST /api/imoti/analyze`)
+
 Windows note:
 - If PowerShell blocks `npm` scripts, see [server/README_LOCAL_SETUP.md](server/README_LOCAL_SETUP.md).
 
