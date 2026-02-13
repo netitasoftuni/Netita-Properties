@@ -82,13 +82,18 @@
     return Number.isFinite(n) ? n : null;
   }
 
-  function computePropertiesAnalytics(list) {
-    const properties = Array.isArray(list) ? list : [];
+  function normalizeListingType(value) {
+    const v = typeof value === 'string' ? value.trim().toLowerCase() : '';
+    if (v === 'sale' || v === 'rent' || v === 'rent_per_day') return v;
+    return 'sale';
+  }
+
+  function computeStats(list) {
     const prices = [];
     const sqfts = [];
     const pricePerSqft = [];
 
-    properties.forEach((p) => {
+    (Array.isArray(list) ? list : []).forEach((p) => {
       const price = finiteNumber(p && p.price);
       const sqft = finiteNumber(p && p.sqft);
 
@@ -98,7 +103,7 @@
     });
 
     return {
-      count: properties.length,
+      count: Array.isArray(list) ? list.length : 0,
       avgPrice: average(prices),
       medianPrice: median(prices),
       avgSqft: average(sqfts),
@@ -106,37 +111,75 @@
     };
   }
 
+  function computePropertiesAnalytics(list) {
+    const properties = Array.isArray(list) ? list : [];
+    const sale = [];
+    const rent = [];
+    const rentPerDay = [];
+
+    properties.forEach((p) => {
+      const t = normalizeListingType(p && p.listingType);
+      if (t === 'rent') rent.push(p);
+      else if (t === 'rent_per_day') rentPerDay.push(p);
+      else sale.push(p);
+    });
+
+    return {
+      byListingType: {
+        sale: computeStats(sale),
+        rent: computeStats(rent),
+        rent_per_day: computeStats(rentPerDay)
+      }
+    };
+  }
+
   function renderAnalytics(analytics) {
     const root = Dom.analytics();
     if (!root) return;
 
-    const a = analytics || {};
+    const a = analytics && analytics.byListingType ? analytics.byListingType : null;
+    const empty = { count: 0, avgPrice: null, medianPrice: null, avgSqft: null, avgPricePerSqft: null };
 
-    root.innerHTML = `
+    const blocks = [
+      { key: 'sale', title: 'For Sale' },
+      { key: 'rent', title: 'For Rent' },
+      { key: 'rent_per_day', title: 'Rent per Day' }
+    ]
+      .map(({ key, title }) => {
+        const s = a && a[key] ? a[key] : empty;
+        return `
 <div class="admin-analytics-card">
-  <div class="admin-analytics-card__label">Total Properties</div>
-  <div class="admin-analytics-card__value">${escapeHtml(formatNumber(a.count))}</div>
-</div>
+  <div class="admin-analytics-card__title">${escapeHtml(title)}</div>
 
-<div class="admin-analytics-card">
-  <div class="admin-analytics-card__label">Average Price</div>
-  <div class="admin-analytics-card__value">${escapeHtml(a.avgPrice === null ? '—' : formatCurrency(a.avgPrice))}</div>
-</div>
+  <div class="admin-analytics-metric">
+    <div class="admin-analytics-metric__label">Total Properties</div>
+    <div class="admin-analytics-metric__value">${escapeHtml(formatNumber(s.count))}</div>
+  </div>
 
-<div class="admin-analytics-card">
-  <div class="admin-analytics-card__label">Median Price</div>
-  <div class="admin-analytics-card__value">${escapeHtml(a.medianPrice === null ? '—' : formatCurrency(a.medianPrice))}</div>
-</div>
+  <div class="admin-analytics-metric">
+    <div class="admin-analytics-metric__label">Average Price</div>
+    <div class="admin-analytics-metric__value">${escapeHtml(s.avgPrice === null ? '—' : formatCurrency(s.avgPrice))}</div>
+  </div>
 
-<div class="admin-analytics-card">
-  <div class="admin-analytics-card__label">Average Sqft</div>
-  <div class="admin-analytics-card__value">${escapeHtml(formatNumber(a.avgSqft, { maximumFractionDigits: 0 }))}</div>
-</div>
+  <div class="admin-analytics-metric">
+    <div class="admin-analytics-metric__label">Median Price</div>
+    <div class="admin-analytics-metric__value">${escapeHtml(s.medianPrice === null ? '—' : formatCurrency(s.medianPrice))}</div>
+  </div>
 
-<div class="admin-analytics-card">
-  <div class="admin-analytics-card__label">Average Price / Sqft</div>
-  <div class="admin-analytics-card__value">${escapeHtml(a.avgPricePerSqft === null ? '—' : formatCurrency(a.avgPricePerSqft))}</div>
+  <div class="admin-analytics-metric">
+    <div class="admin-analytics-metric__label">Average Sqft</div>
+    <div class="admin-analytics-metric__value">${escapeHtml(formatNumber(s.avgSqft, { maximumFractionDigits: 0 }))}</div>
+  </div>
+
+  <div class="admin-analytics-metric">
+    <div class="admin-analytics-metric__label">Average Price / Sqft</div>
+    <div class="admin-analytics-metric__value">${escapeHtml(s.avgPricePerSqft === null ? '—' : formatCurrency(s.avgPricePerSqft))}</div>
+  </div>
 </div>`;
+      })
+      .join('');
+
+    root.innerHTML = blocks;
   }
 
   function normalizeNumber(value, { allowFloat = false } = {}) {

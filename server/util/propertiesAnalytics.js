@@ -19,34 +19,55 @@ function finiteNumber(value) {
   return Number.isFinite(n) ? n : null;
 }
 
-function computePropertiesAnalytics(properties) {
-  const list = Array.isArray(properties) ? properties : [];
-
+function computeStats(list) {
   const prices = [];
   const sqfts = [];
   const pricePerSqft = [];
 
-  list.forEach((p) => {
+  (Array.isArray(list) ? list : []).forEach((p) => {
     const price = finiteNumber(p && p.price);
     const sqft = finiteNumber(p && p.sqft);
 
     if (price !== null) prices.push(price);
     if (sqft !== null) sqfts.push(sqft);
-
-    if (price !== null && sqft !== null && sqft > 0) {
-      pricePerSqft.push(price / sqft);
-    }
+    if (price !== null && sqft !== null && sqft > 0) pricePerSqft.push(price / sqft);
   });
 
   return {
-    count: list.length,
-
+    count: Array.isArray(list) ? list.length : 0,
     avgPrice: average(prices),
     medianPrice: median(prices),
-
     avgSqft: average(sqfts),
-
     avgPricePerSqft: average(pricePerSqft)
+  };
+}
+
+function normalizeListingType(value) {
+  const v = typeof value === 'string' ? value.trim().toLowerCase() : '';
+  if (v === 'sale' || v === 'rent' || v === 'rent_per_day') return v;
+  return 'sale';
+}
+
+function computePropertiesAnalytics(properties) {
+  const list = Array.isArray(properties) ? properties : [];
+
+  const sale = [];
+  const rent = [];
+  const rentPerDay = [];
+
+  list.forEach((p) => {
+    const t = normalizeListingType(p && p.listingType);
+    if (t === 'rent') rent.push(p);
+    else if (t === 'rent_per_day') rentPerDay.push(p);
+    else sale.push(p);
+  });
+
+  return {
+    byListingType: {
+      sale: computeStats(sale),
+      rent: computeStats(rent),
+      rent_per_day: computeStats(rentPerDay)
+    }
   };
 }
 
