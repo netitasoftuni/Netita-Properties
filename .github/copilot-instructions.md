@@ -46,7 +46,6 @@ For `POST /api/imoti/analyze`:
 - Do not modify JSON schema without explanation
 
 ## Agent Routing
-## Agent Routing
 - Server/backend tasks → Follow [BackendExpertAgent](prompts/BackendExpertAgent.agent.md)
 - UI/frontend tasks → Follow [FrontendExpertAgent](prompts/FrontendExpertAgent.agent.md)
 
