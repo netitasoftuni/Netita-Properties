@@ -9,6 +9,26 @@ Netita Properties is a responsive real estate website built with vanilla HTML5, 
 
 ---
 
+## Copilot Agents (Repo Guidance)
+
+This repo includes GitHub Copilot instruction + prompt files to keep contributions aligned with the project's strict vanilla architecture.
+
+- Copilot global instructions: [.github/copilot-instructions.md](.github/copilot-instructions.md)
+- Agent prompts:
+   - Backend: [.github/prompts/BackendExpertAgent.md](.github/prompts/BackendExpertAgent.md)
+   - Frontend: [.github/prompts/FrontendExpertAgent.md](.github/prompts/FrontendExpertAgent.md)
+
+```
+.github/
+│
+├── copilot-instructions.md
+└── prompts/
+      ├── BackendExpertAgent.md
+      └── FrontendExpertAgent.md
+```
+
+---
+
 ## AI Property Intelligence (imoti.net) — Local API
 
 This project now includes an optional local API endpoint to analyze a public `imoti.net` listing URL and return **insights only**.
