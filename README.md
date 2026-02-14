@@ -15,16 +15,16 @@ This repo includes GitHub Copilot instruction + prompt files to keep contributio
 
 - Copilot global instructions: [.github/copilot-instructions.md](.github/copilot-instructions.md)
 - Agent prompts:
-   - Backend: [.github/prompts/BackendExpertAgent.md](.github/prompts/BackendExpertAgent.md)
-   - Frontend: [.github/prompts/FrontendExpertAgent.md](.github/prompts/FrontendExpertAgent.md)
+   - Backend: [.github/prompts/BackendExpertAgent.agent.md](.github/prompts/BackendExpertAgent.agent.md)
+   - Frontend: [.github/prompts/FrontendExpertAgent.agent.md](.github/prompts/FrontendExpertAgent.agent.md)
 
 ```
 .github/
 │
 ├── copilot-instructions.md
 └── prompts/
-      ├── BackendExpertAgent.md
-      └── FrontendExpertAgent.md
+   ├── BackendExpertAgent.agent.md
+   └── FrontendExpertAgent.agent.md
 ```
 
 ---

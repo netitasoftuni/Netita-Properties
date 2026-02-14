@@ -1,37 +1,58 @@
-# Netita Properties – Copilot Global Instructions
+---
+name: 'Netita Properties Standards'
+description: 'Global coding and architecture rules for Netita Properties'
+applyTo: '**/*'
+---
 
-This repository uses a strict vanilla architecture.
+# Netita Properties – Global Instructions
 
-Frontend:
+This repository follows a strict vanilla architecture.
+
+## Frontend
 - HTML5
-- CSS3 (custom design system)
-- Vanilla JavaScript (modular)
-- No frameworks
-- No UI libraries
+- CSS3 (custom design system in css/style.css + page styles in css/pages.css)
+- Vanilla JavaScript (modular in js/; avoid inline scripts)
+- No frameworks or UI libraries
+- No Tailwind/Bootstrap
+- Avoid new globals; use `window.APP` as the only namespace if needed
+- Follow responsive and accessibility rules
 
-Backend:
+## Backend
 - Node.js 18+
 - Express
 - ES Modules
-- JSON file persistence
-- No database
-- No ORM
-- No heavy dependencies
+- JSON file persistence (server/data/*.json)
+- No database / ORM / heavy dependencies
+- Keep route handlers thin
+- Use async/await
+- Validate inputs & handle errors
+- Prefer non-blocking I/O (fs/promises)
+- Do not expose stack traces, file paths, or sensitive data
 
-Architecture Rules:
-- Keep backend logic modular.
-- Keep route handlers thin.
-- Keep frontend modular and consistent.
-- Follow existing design system.
-- Do not introduce frameworks.
-- Do not modify JSON schema without explanation.
+## AI Endpoint Rules (CRITICAL)
 
-Agent Routing:
-- Server/backend tasks → Follow BackendExpertAgent.
-- UI/frontend tasks → Follow FrontendExpertAgent.
+For `POST /api/imoti/analyze`:
+- Do not store raw HTML
+- Do not persist scraped listing content
+- Extract minimal structured numeric fields only (in-memory)
+- Return computed insights JSON only
 
-Always prioritize:
+## Architecture Rules
+- Keep backend logic modular
+- Put business logic in server/services and helpers in server/util
+- Keep frontend modular and consistent
+- Follow the CSS design system
+- Do not introduce frameworks
+- Do not modify JSON schema without explanation
+
+## Agent Routing
+## Agent Routing
+- Server/backend tasks → Follow [BackendExpertAgent](prompts/BackendExpertAgent.agent.md)
+- UI/frontend tasks → Follow [FrontendExpertAgent](prompts/FrontendExpertAgent.agent.md)
+
+## Always Prioritize
 - Maintainability
 - Performance
 - Clean architecture
 - Security
+- Consistent naming and modular structure
