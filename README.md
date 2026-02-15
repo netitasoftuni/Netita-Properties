@@ -14,6 +14,7 @@ Netita Properties is a responsive real estate website built with vanilla HTML5, 
 This repo includes GitHub Copilot instruction + prompt files to keep contributions aligned with the project's strict vanilla architecture.
 
 - Copilot global instructions: [.github/copilot-instructions.md](.github/copilot-instructions.md)
+- Scoped instructions (path-based): [.github/instructions/](.github/instructions/) (e.g. JS guidelines for `js/**/*.js`)
 - Project plans: [.github/plans/](.github/plans/) (one plan per file: `YYYY-MM-DD - Title.md`)
 - Agent prompts:
    - Backend: [.github/agents/BackendExpertAgent.agent.md](.github/agents/BackendExpertAgent.agent.md)
@@ -26,6 +27,7 @@ This repo includes GitHub Copilot instruction + prompt files to keep contributio
 .github/
 │
 ├── copilot-instructions.md
+├── instructions/
 ├── plans/
 ├── prompts/
 │  ├── Explain-Code-Netita.prompt.md

@@ -61,3 +61,7 @@ For `POST /api/imoti/analyze`:
 - One plan per file, Markdown format.
 - Naming: `YYYY-MM-DD - Title.md`.
 - Keep plans practical: goal, steps, verification, and any key decisions.
+
+## Scoped Instructions
+- Additional path-based instruction files live under `.github/instructions/`.
+- JavaScript-specific rules for `js/**/*.js`: `.github/instructions/js.instructions.md`.
