@@ -55,3 +55,9 @@ For `POST /api/imoti/analyze`:
 - Clean architecture
 - Security
 - Consistent naming and modular structure
+
+## Plans
+- Store project plans in `.github/plans/` (avoid scattering plans across the repo).
+- One plan per file, Markdown format.
+- Naming: `YYYY-MM-DD - Title.md`.
+- Keep plans practical: goal, steps, verification, and any key decisions.
