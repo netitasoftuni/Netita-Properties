@@ -17,11 +17,17 @@ This repo includes GitHub Copilot instruction + prompt files to keep contributio
 - Agent prompts:
    - Backend: [.github/agents/BackendExpertAgent.agent.md](.github/agents/BackendExpertAgent.agent.md)
    - Frontend: [.github/agents/FrontendExpertAgent.agent.md](.github/agents/FrontendExpertAgent.agent.md)
+- Copilot prompt templates:
+   - Strict code review/explain: [.github/prompts/Explain-Code-Strict.prompt.md](.github/prompts/Explain-Code-Strict.prompt.md)
+   - Beginner-friendly code explain: [.github/prompts/Explain-Code-Netita.prompt.md](.github/prompts/Explain-Code-Netita.prompt.md)
 
 ```
 .github/
 │
 ├── copilot-instructions.md
+├── prompts/
+│  ├── Explain-Code-Netita.prompt.md
+│  └── Explain-Code-Strict.prompt.md
 └── agents/
    ├── BackendExpertAgent.agent.md
    └── FrontendExpertAgent.agent.md
